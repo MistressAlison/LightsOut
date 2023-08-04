@@ -8,22 +8,27 @@ import basemod.*;
 import basemod.helpers.ScreenPostProcessorManager;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
+import basemod.interfaces.PostRenderSubscriber;
+import basemod.interfaces.PostUpdateSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.localization.UIStrings;
+import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 @SpireInitializer
-public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscriber {
+public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscriber, PostRenderSubscriber, PostUpdateSubscriber {
     public static final Logger logger = LogManager.getLogger(LightsOutMod.class.getName());
 
     private static String modID;
@@ -65,6 +70,8 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
     private static final String DESCRIPTION = "Turns off the Spire.";
 
     public static final String BADGE_IMAGE = "LightsOutResources/images/Badge.png";
+
+    public static final ArrayList<AbstractGameEffect> managedEffects = new ArrayList<>();
 
     public LightsOutMod() {
         logger.info("Subscribe to BaseMod hooks");
@@ -221,5 +228,21 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
 
     public static String makeID(String idText) {
         return getModID() + ":" + idText;
+    }
+
+    @Override
+    public void receivePostRender(SpriteBatch sb) {
+        for (AbstractGameEffect e : managedEffects) {
+            e.render(sb);
+            CustomLightPatches.processCustomLights(e);
+        }
+    }
+
+    @Override
+    public void receivePostUpdate() {
+        for (AbstractGameEffect e : managedEffects) {
+            e.update();
+        }
+        managedEffects.removeIf(e -> e.isDone);
     }
 }
