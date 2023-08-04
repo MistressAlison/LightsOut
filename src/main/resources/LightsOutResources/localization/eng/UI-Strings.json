@@ -1,0 +1,17 @@
+{
+  "LightsOut:ModConfigs": {
+    "TEXT": [
+      "Enable Mod",
+      "Lantern Mode",
+      "Light Radius (default 360)",
+      "Lantern Mode Decay (default 5)"
+    ]
+  },
+  "LightsOut:InvincibleText": {
+    "TEXT": ["Can only lose #b%d more HP this turn before it receives #b%d%% less damage.",
+            "Can only lose #b%d more HP this turn before ALL damage taken is reduced to 1.",
+            "Receives #b%d%% less damage this turn.",
+            "Reduce ALL damage taken and HP loss to #b1 this turn.",
+            " Damage will not be reduced below 1."]
+  }
+}
