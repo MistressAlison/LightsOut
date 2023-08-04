@@ -4,7 +4,8 @@
       "Enable Mod",
       "Lantern Mode",
       "Light Radius (default 360)",
-      "Lantern Mode Decay (default 5)"
+      "Lantern Mode Decay (default 5)",
+      "Ambient Light (default 0)"
     ]
   },
   "LightsOut:InvincibleText": {

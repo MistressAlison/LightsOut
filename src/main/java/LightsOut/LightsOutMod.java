@@ -8,7 +8,6 @@ import basemod.*;
 import basemod.helpers.ScreenPostProcessorManager;
 import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
-import basemod.interfaces.ScreenPostProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
@@ -49,6 +48,10 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
 
     public static int torchModeDecay = 5;
 
+    public static final String AMBIENT_LIGHT = "ambientLight";
+
+    public static int ambientLight = 0;
+
     public static UIStrings uiStrings;
 
     public static String[] TEXT;
@@ -74,12 +77,14 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         LODefaultSettings.setProperty("torchMode", Boolean.toString(torchMode));
         LODefaultSettings.setProperty("mouseRadium", String.valueOf(mouseRadius));
         LODefaultSettings.setProperty("torchModeDecay", String.valueOf(torchModeDecay));
+        LODefaultSettings.setProperty(AMBIENT_LIGHT, String.valueOf(ambientLight));
         try {
             LOConfig = new SpireConfig(modID, FILE_NAME, LODefaultSettings);
             modEnabled = LOConfig.getBool("enableMod");
             torchMode = LOConfig.getBool("torchMode");
             mouseRadius = LOConfig.getInt("mouseRadium");
             torchModeDecay = LOConfig.getInt("torchModeDecay");
+            ambientLight = LOConfig.getInt(AMBIENT_LIGHT);
         } catch (IOException e) {
             logger.error("Lights Out SpireConfig initialization failed:");
             e.printStackTrace();
@@ -106,13 +111,13 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         TEXT = uiStrings.TEXT;
         Texture badgeTexture = TextureLoader.getTexture(BADGE_IMAGE);
         ModPanel settingsPanel = new ModPanel();
+
         float currentYposition = 740.0F;
         float sliderOffset = 50.0F + FontHelper.getWidth(FontHelper.charDescFont, TEXT[3], 1.0F / Settings.scale);
         float spacingY = 55.0F;
-        ModLabeledToggleButton enableModsButton = new ModLabeledToggleButton(TEXT[0], 360.0F, currentYposition - 10.0F, Settings.CREAM_COLOR, FontHelper.charDescFont, LOConfig.getBool("enableMod"), settingsPanel, label -> {
 
-        },button -> {
-            LOConfig.setBool("enableMod", button.enabled);
+        ModLabeledToggleButton enableModsButton = new ModLabeledToggleButton(TEXT[0], 360.0F, currentYposition - 10.0F, Settings.CREAM_COLOR, FontHelper.charDescFont, LOConfig.getBool(ENABLE_MOD), settingsPanel, label -> {},button -> {
+            LOConfig.setBool(ENABLE_MOD, button.enabled);
             modEnabled = button.enabled;
             if (modEnabled) {
                 CardCrawlGame.sound.playA("ATTACK_FIRE", 0.4F);
@@ -126,10 +131,9 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
             }
         });
         currentYposition -= spacingY;
-        ModLabeledToggleButton torchModeButton = new ModLabeledToggleButton(TEXT[1], 360.0F, currentYposition - 10.0F, Settings.CREAM_COLOR, FontHelper.charDescFont, LOConfig.getBool("torchMode"), settingsPanel, label -> {
 
-        },button -> {
-            LOConfig.setBool("torchMode", button.enabled);
+        ModLabeledToggleButton torchModeButton = new ModLabeledToggleButton(TEXT[1], 360.0F, currentYposition - 10.0F, Settings.CREAM_COLOR, FontHelper.charDescFont, LOConfig.getBool(TORCH_MODE), settingsPanel, label -> {},button -> {
+            LOConfig.setBool(TORCH_MODE, button.enabled);
             torchMode = button.enabled;
             try {
                 LOConfig.save();
@@ -138,11 +142,10 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
             }
         });
         currentYposition -= spacingY;
-        ModLabel radLabel = new ModLabel(TEXT[2], 400.0F, currentYposition, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {
 
-        });
-        ModMinMaxSlider radSlider = new ModMinMaxSlider("", 400.0F + sliderOffset, currentYposition + 7.0F, 180.0F, 540.0F, LOConfig.getInt("mouseRadium"), "%.0f", settingsPanel, slider -> {
-            LOConfig.setInt("mouseRadium", Math.round(slider.getValue()));
+        ModLabel radLabel = new ModLabel(TEXT[2], 400.0F, currentYposition, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
+        ModMinMaxSlider radSlider = new ModMinMaxSlider("", 400.0F + sliderOffset, currentYposition + 7.0F, 180.0F, 540.0F, LOConfig.getInt(MOUSE_RADIUS), "%.0f", settingsPanel, slider -> {
+            LOConfig.setInt(MOUSE_RADIUS, Math.round(slider.getValue()));
             mouseRadius = Math.round(slider.getValue());
             try {
                 LOConfig.save();
@@ -151,11 +154,10 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
             }
         });
         currentYposition -= spacingY;
-        ModLabel decayLabel = new ModLabel(TEXT[3], 400.0F, currentYposition, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {
 
-        });
-        ModMinMaxSlider decaySlider = new ModMinMaxSlider("", 400.0F + sliderOffset, currentYposition + 7.0F, 0.0F, 10.0F, LOConfig.getInt("torchModeDecay"), "%.0f", settingsPanel, slider -> {
-            LOConfig.setInt("torchModeDecay", Math.round(slider.getValue()));
+        ModLabel decayLabel = new ModLabel(TEXT[3], 400.0F, currentYposition, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
+        ModMinMaxSlider decaySlider = new ModMinMaxSlider("", 400.0F + sliderOffset, currentYposition + 7.0F, 0.0F, 10.0F, LOConfig.getInt(TORCH_MODE_DECAY), "%.0f", settingsPanel, slider -> {
+            LOConfig.setInt(TORCH_MODE_DECAY, Math.round(slider.getValue()));
             torchModeDecay = Math.round(slider.getValue());
             try {
                 LOConfig.save();
@@ -164,17 +166,36 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
             }
         });
         currentYposition -= spacingY;
-        settingsPanel.addUIElement((IUIElement)enableModsButton);
-        settingsPanel.addUIElement((IUIElement)torchModeButton);
-        settingsPanel.addUIElement((IUIElement)radLabel);
-        settingsPanel.addUIElement((IUIElement)radSlider);
-        settingsPanel.addUIElement((IUIElement)decayLabel);
-        settingsPanel.addUIElement((IUIElement)decaySlider);
-        settingsPanel.addUIElement((IUIElement)new ModTorch(325.0F, 740.0F));
+
+        ModLabel ambientLabel = new ModLabel(TEXT[4], 400.0F, currentYposition, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
+        ModMinMaxSlider ambientSlider = new ModMinMaxSlider("", 400.0F + sliderOffset, currentYposition + 7.0F, 0.0F, 100.0F, LOConfig.getInt(AMBIENT_LIGHT), "%.0f", settingsPanel, slider -> {
+            LOConfig.setInt(AMBIENT_LIGHT, Math.round(slider.getValue()));
+            ambientLight = Math.round(slider.getValue());
+            try {
+                LOConfig.save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        currentYposition -= spacingY;
+
+        settingsPanel.addUIElement(enableModsButton);
+        settingsPanel.addUIElement(torchModeButton);
+        settingsPanel.addUIElement(radLabel);
+        settingsPanel.addUIElement(radSlider);
+        settingsPanel.addUIElement(decayLabel);
+        settingsPanel.addUIElement(decaySlider);
+        settingsPanel.addUIElement(ambientLabel);
+        settingsPanel.addUIElement(ambientSlider);
+        settingsPanel.addUIElement(new ModTorch(325.0F, 740.0F));
+
         BaseMod.registerModBadge(badgeTexture, "Lights Out", "Mistress Autumn", "Turns off the Spire.", settingsPanel);
+
         logger.info("Done loading badge Image and mod options");
+
         ShaderLogic shaderLogic = new ShaderLogic();
-        ScreenPostProcessorManager.addPostProcessor((ScreenPostProcessor)shaderLogic);
+        ScreenPostProcessorManager.addPostProcessor(shaderLogic);
+
         logger.info("Scanning Custom Lighting");
         long time = -System.currentTimeMillis();
         CustomLightPatches.findCustomLights();

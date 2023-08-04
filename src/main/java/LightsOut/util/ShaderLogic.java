@@ -30,6 +30,9 @@ public class ShaderLogic implements ScreenPostProcessor {
         sb.setColor(Color.WHITE);
         sb.setBlendFunction(1, 0);
         if (LightsOutMod.modEnabled) {
+            if (LightsOutMod.ambientLight > 0) {
+                lightsToRender.add(new LightData(Settings.WIDTH/2f, Settings.HEIGHT/2f, Settings.WIDTH*2, LightsOutMod.ambientLight/100f, Color.WHITE));
+            }
             ShaderProgram back = sb.getShader();
             sb.setShader(sp);
             if (!CardCrawlGame.isPopupOpen) {
@@ -37,14 +40,14 @@ public class ShaderLogic implements ScreenPostProcessor {
                 float[] xyri = new float[size * 4];
                 float[] rgba = new float[size * 4];
                 for (int i = 0; i < size; i++) {
-                    xyri[4 * i] = ((LightData)lightsToRender.get(i)).x;
-                    xyri[4 * i + 1] = ((LightData)lightsToRender.get(i)).y;
-                    xyri[4 * i + 2] = ((LightData)lightsToRender.get(i)).radius;
-                    xyri[4 * i + 3] = ((LightData)lightsToRender.get(i)).intensity;
-                    rgba[4 * i] = ((LightData)lightsToRender.get(i)).color.r;
-                    rgba[4 * i + 1] = ((LightData)lightsToRender.get(i)).color.g;
-                    rgba[4 * i + 2] = ((LightData)lightsToRender.get(i)).color.b;
-                    rgba[4 * i + 3] = ((LightData)lightsToRender.get(i)).color.a;
+                    xyri[4 * i] = lightsToRender.get(i).x;
+                    xyri[4 * i + 1] = lightsToRender.get(i).y;
+                    xyri[4 * i + 2] = lightsToRender.get(i).radius;
+                    xyri[4 * i + 3] = lightsToRender.get(i).intensity;
+                    rgba[4 * i] = lightsToRender.get(i).color.r;
+                    rgba[4 * i + 1] = lightsToRender.get(i).color.g;
+                    rgba[4 * i + 2] = lightsToRender.get(i).color.b;
+                    rgba[4 * i + 3] = lightsToRender.get(i).color.a;
                 }
                 sp.setUniformi("u_lightObjects", size);
                 sp.setUniform4fv("u_objectXYRI[0]", xyri, 0, size * 4);
