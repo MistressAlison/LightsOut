@@ -73,17 +73,17 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         logger.info("Done subscribing");
         logger.info("Adding mod settings");
         Properties LODefaultSettings = new Properties();
-        LODefaultSettings.setProperty("enableMod", Boolean.toString(modEnabled));
-        LODefaultSettings.setProperty("torchMode", Boolean.toString(torchMode));
-        LODefaultSettings.setProperty("mouseRadium", String.valueOf(mouseRadius));
-        LODefaultSettings.setProperty("torchModeDecay", String.valueOf(torchModeDecay));
+        LODefaultSettings.setProperty(ENABLE_MOD, Boolean.toString(modEnabled));
+        LODefaultSettings.setProperty(TORCH_MODE, Boolean.toString(torchMode));
+        LODefaultSettings.setProperty(MOUSE_RADIUS, String.valueOf(mouseRadius));
+        LODefaultSettings.setProperty(TORCH_MODE_DECAY, String.valueOf(torchModeDecay));
         LODefaultSettings.setProperty(AMBIENT_LIGHT, String.valueOf(ambientLight));
         try {
             LOConfig = new SpireConfig(modID, FILE_NAME, LODefaultSettings);
-            modEnabled = LOConfig.getBool("enableMod");
-            torchMode = LOConfig.getBool("torchMode");
-            mouseRadius = LOConfig.getInt("mouseRadium");
-            torchModeDecay = LOConfig.getInt("torchModeDecay");
+            modEnabled = LOConfig.getBool(ENABLE_MOD);
+            torchMode = LOConfig.getBool(TORCH_MODE);
+            mouseRadius = LOConfig.getInt(MOUSE_RADIUS);
+            torchModeDecay = LOConfig.getInt(TORCH_MODE_DECAY);
             ambientLight = LOConfig.getInt(AMBIENT_LIGHT);
         } catch (IOException e) {
             logger.error("Lights Out SpireConfig initialization failed:");
@@ -189,7 +189,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         settingsPanel.addUIElement(ambientSlider);
         settingsPanel.addUIElement(new ModTorch(325.0F, 740.0F));
 
-        BaseMod.registerModBadge(badgeTexture, "Lights Out", "Mistress Autumn", "Turns off the Spire.", settingsPanel);
+        BaseMod.registerModBadge(badgeTexture, MODNAME, AUTHOR, DESCRIPTION, settingsPanel);
 
         logger.info("Done loading badge Image and mod options");
 
