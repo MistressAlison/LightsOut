@@ -7,11 +7,13 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch;
 import com.megacrit.cardcrawl.characters.Defect;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.monsters.beyond.Exploder;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.potions.EnergyPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
+import com.megacrit.cardcrawl.vfx.FastSmokeParticle;
 import javassist.*;
 
 import java.util.ArrayList;
@@ -126,10 +128,13 @@ public class PatchFactory {
             //Cards
 
             //Players
-            addEntity(Defect.class, "Hips_sphere", 20f, 2f, Color.CYAN);
+            addEntity(Defect.class, "Hips_sphere", 200f, 0.3f, Color.CYAN);
+
             //Monsters
+            addEntity(Exploder.class, "inside", 200f, 1.2f, new Color(1.0f, 1.0f, 0.5f, 1.0f));
 
             //Effects
+            addSimpleVFX(FastSmokeParticle.class, 300f, 2f);
 
             for (PatchData data : PATCHES) {
                 CtClass ctClass = ctBehavior.getDeclaringClass().getClassPool().get(data.classToPatch.getName());
