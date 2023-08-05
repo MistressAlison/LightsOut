@@ -10,7 +10,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.beyond.Exploder;
 import com.megacrit.cardcrawl.orbs.*;
 import com.megacrit.cardcrawl.potions.*;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.*;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.FastSmokeParticle;
 import javassist.*;
@@ -126,6 +126,14 @@ public class PatchFactory {
             addPotion(DistilledChaosPotion.class, 100f, 1.0f);
 
             //Relics
+            addRelic(BurningBlood.class, 50f, 0.5f, new Color(1.0f, 0.5f, 0.2f, 1.0f));
+            addRelic(Lantern.class, 300f, 2.0f, new Color(1.0F, 0.96F, 0.87F, 1.0F));
+            addRelic(NuclearBattery.class, 300f, 2.0f, new Color(0.7F, 0.7F, 1.0F, 1.0F));
+            addRelic(FusionHammer.class, 150f, 0.8f, new Color(1.0F, 0.4F, 0.8F, 1.0F));
+            addRelic(HolyWater.class, 50f, 0.5f, new Color(1.0F, 0.6F, 0.9F, 1.0F));
+            addRelic(BottledFlame.class, 200f, 1.5f, new Color(1.0F, 0.6F, 0.2F, 1.0F));
+            addRelic(BottledLightning.class, 200f, 2.0f, new Color(1.0F, 1.0F, 0.0F, 1.0F));
+            addRelic(BlueCandle.class, 200f, 0.8f, new Color(0.4F, 0.0F, 1.0F, 1.0F));
 
             //Orbs
             addOrb(Lightning.class, 200f, 1.2f, new Color(1.0f, 1.0f, 0.6f, 1.0f));

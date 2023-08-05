@@ -251,41 +251,14 @@ public class RenderPatches {
         }
     }
 
-    @SpirePatches2({@SpirePatch2(clz = AbstractRelic.class, method = "renderInTopPanel"), @SpirePatch2(clz = AbstractRelic.class, method = "render", paramtypez = {SpriteBatch.class}), @SpirePatch2(clz = AbstractRelic.class, method = "render", paramtypez = {SpriteBatch.class, boolean.class, Color.class}), @SpirePatch2(clz = AbstractRelic.class, method = "renderWithoutAmount")})
+    @SpirePatch2(clz = AbstractRelic.class, method = "renderInTopPanel")
+    @SpirePatch2(clz = AbstractRelic.class, method = "render", paramtypez = {SpriteBatch.class})
+    @SpirePatch2(clz = AbstractRelic.class, method = "render", paramtypez = {SpriteBatch.class, boolean.class, Color.class})
+    @SpirePatch2(clz = AbstractRelic.class, method = "renderWithoutAmount")
     public static class AddLightsToRelics {
-        private static final Color LANTERN_COLOR = new Color(1.0F, 0.96F, 0.87F, 1.0F);
-
-        private static final Color FUSION_HAMMER_COLOR = new Color(1.0F, 0.4F, 0.8F, 1.0F);
-
-        private static final Color HOLY_WATER_COLOR = new Color(1.0F, 0.6F, 0.9F, 1.0F);
-
-        private static final Color NUCLEAR_BATTERY_COLOR = new Color(0.7F, 0.7F, 1.0F, 1.0F);
-
-        private static final Color BOTTLE_FLAME_COLOR = new Color(1.0F, 0.6F, 0.2F, 1.0F);
-
-        private static final Color BOTTLE_LIGHTNING_COLOR = new Color(1.0F, 1.0F, 0.0F, 1.0F);
-
-        private static final Color BLUE_CANDLE_COLOR = new Color(0.4F, 0.0F, 1.0F, 1.0F);
-
         @SpirePostfixPatch
         public static void add(AbstractRelic __instance) {
-            if (__instance instanceof com.megacrit.cardcrawl.relics.Lantern) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.currentX, __instance.currentY, ShaderLogic.TORCH_RADIUS, 2.5F, LANTERN_COLOR));
-            } else if (__instance instanceof com.megacrit.cardcrawl.relics.FusionHammer) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.currentX, __instance.currentY, ShaderLogic.TORCH_RADIUS, 1.0F, FUSION_HAMMER_COLOR));
-            } else if (__instance instanceof com.megacrit.cardcrawl.relics.HolyWater) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.currentX, __instance.currentY, ShaderLogic.TORCH_RADIUS, 1.0F, HOLY_WATER_COLOR));
-            } else if (__instance instanceof com.megacrit.cardcrawl.relics.NuclearBattery) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.currentX, __instance.currentY, ShaderLogic.TORCH_RADIUS, 2.0F, NUCLEAR_BATTERY_COLOR));
-            } else if (__instance instanceof com.megacrit.cardcrawl.relics.BottledFlame) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.currentX, __instance.currentY, ShaderLogic.TORCH_RADIUS, 1.5F, BOTTLE_FLAME_COLOR));
-            } else if (__instance instanceof com.megacrit.cardcrawl.relics.BottledLightning) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.currentX, __instance.currentY, ShaderLogic.TORCH_RADIUS, 1.8F, BOTTLE_LIGHTNING_COLOR));
-            } else if (__instance instanceof com.megacrit.cardcrawl.relics.BlueCandle) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.currentX, __instance.currentY, ShaderLogic.TORCH_RADIUS, 1.0F, BLUE_CANDLE_COLOR));
-            } else {
-                CustomLightPatches.processCustomLights(__instance);
-            }
+            CustomLightPatches.processCustomLights(__instance);
         }
     }
 
