@@ -1,5 +1,6 @@
 package LightsOut.patches;
 
+import LightsOut.util.CustomLightData;
 import LightsOut.util.LightData;
 import LightsOut.util.ShaderLogic;
 import LightsOut.util.WidePotionHelper;
@@ -8,10 +9,9 @@ import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.evacipated.cardcrawl.mod.widepotions.potions.WidePotion;
 import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatches2;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -73,6 +73,10 @@ import com.megacrit.cardcrawl.vfx.scene.TorchParticleMEffect;
 import com.megacrit.cardcrawl.vfx.scene.TorchParticleSEffect;
 import com.megacrit.cardcrawl.vfx.scene.TorchParticleXLEffect;
 import com.megacrit.cardcrawl.vfx.stance.StanceAuraEffect;
+import javassist.CannotCompileException;
+import javassist.CtBehavior;
+import javassist.CtClass;
+import javassist.CtNewMethod;
 
 public class RenderPatches {
     @SpirePatches2({@SpirePatch2(clz = GhostlyFireEffect.class, method = "render"), @SpirePatch2(clz = GhostlyWeakFireEffect.class, method = "render")})
@@ -285,26 +289,6 @@ public class RenderPatches {
         }
     }
 
-    @SpirePatches2({@SpirePatch2(clz = Lightning.class, method = "render"), @SpirePatch2(clz = Plasma.class, method = "render"), @SpirePatch2(clz = Dark.class, method = "render")})
-    public static class AddLightsToOrbs {
-        private static final Color LIGHTNING_COLOR = Color.YELLOW.cpy();
-
-        private static final Color PLASMA_COLOR = new Color(0.7F, 0.7F, 1.0F, 1.0F);
-
-        private static final Color DARK_COLOR = new Color(0.5F, 1.0F, 0.5F, 1.0F);
-
-        @SpirePostfixPatch
-        public static void add(AbstractOrb __instance) {
-            if (__instance instanceof Lightning) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.cX, __instance.cY, ShaderLogic.TORCH_RADIUS, 1.5F, LIGHTNING_COLOR));
-            } else if (__instance instanceof Plasma) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.cX, __instance.cY, ShaderLogic.TORCH_RADIUS, 1.8F, PLASMA_COLOR));
-            } else if (__instance instanceof Dark) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.cX, __instance.cY, ShaderLogic.TORCH_RADIUS, -1.0F, DARK_COLOR));
-            }
-        }
-    }
-
     @SpirePatch2(clz = CharacterOption.class, method = "render")
     public static class AddLightsToCharSelect {
         private static final float EYE_X = 1350.0F * Settings.xScale;
@@ -360,23 +344,66 @@ public class RenderPatches {
         }
     }
 
-    @SpirePatches2({@SpirePatch2(clz = AbstractPotion.class, method = "render"), @SpirePatch2(clz = AbstractPotion.class, method = "shopRender"), @SpirePatch2(clz = AbstractPotion.class, method = "labRender")})
-    public static class AddLightsToPotions {
-        private static final boolean wideLoaded = Loader.isModLoaded("widepotions");
+    @SpirePatch2(clz = WidePotion.class, method = SpirePatch.CONSTRUCTOR, requiredModId = "widepotions")
+    public static class WidePotionTest {
+        @SpireRawPatch
+        public static void patch(CtBehavior ctBehavior) throws CannotCompileException {
+            CtClass ctClass = ctBehavior.getDeclaringClass();
+            ctClass.addMethod(CtNewMethod.make("public float[] _lightsOutGetXYRI() {return LightsOut.patches.RenderPatches.WidePotionTest.wideXYRI(potion, posX, posY);}", ctClass));
+            ctClass.addMethod(CtNewMethod.make("public com.badlogic.gdx.graphics.Color[] _lightsOutGetColor() {return LightsOut.patches.RenderPatches.WidePotionTest.wideColor(potion);}", ctClass));
+        }
 
+        public static float[] wideXYRI(AbstractPotion basePotion, float x, float y) {
+            CustomLightData data = CustomLightPatches.customLights.get(basePotion.getClass());
+            if (data != null) {
+                float[] xyri = data.getXYRIData(basePotion);
+                float[] ret = new float[xyri.length*2];
+                for (int i = 0 ; i < xyri.length ; i++) {
+                    if (i % 4 == 0) {
+                        //X
+                        ret[i] = x;
+                        ret[i + xyri.length] = x + 64f * Settings.scale;
+                    } else if (i % 4 == 1) {
+                        //Y
+                        ret[i] = y;
+                        ret[i + xyri.length] = y;
+                    } else if (i % 4 == 2) {
+                        //R
+                        ret[i] = xyri[i] * 1.5f;
+                        ret[i + xyri.length] = xyri[i] * 1.5f;
+                    } else {
+                        //I
+                        ret[i] = xyri[i] * 1.25f;
+                        ret[i + xyri.length] = xyri[i] * 1.25f;
+                    }
+                }
+                return ret;
+            }
+            return new float[0];
+        }
+
+        public static Color[] wideColor(AbstractPotion basePotion) {
+            CustomLightData data = CustomLightPatches.customLights.get(basePotion.getClass());
+            if (data != null) {
+                Color[] color = data.getColorData(basePotion);
+                Color[] ret = new Color[color.length*2];
+                for (int i = 0 ; i < color.length ; i++) {
+                    ret[i] = color[i];
+                    ret[i + color.length] = color[i];
+                }
+                return ret;
+            }
+            return new Color[0];
+        }
+    }
+
+    @SpirePatch2(clz = AbstractPotion.class, method = "render")
+    @SpirePatch2(clz = AbstractPotion.class, method = "shopRender")
+    @SpirePatch2(clz = AbstractPotion.class, method = "labRender")
+    public static class AddLightsToPotions {
         @SpirePostfixPatch
         public static void plz(AbstractPotion __instance) {
-            if (wideLoaded)
-                WidePotionHelper.checkWide(__instance);
-            if (__instance.p_effect == AbstractPotion.PotionEffect.RAINBOW) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.posX, __instance.posY, 125.0F * Settings.scale, 1.0F, __instance.liquidColor));
-            } else if (__instance instanceof com.megacrit.cardcrawl.potions.FirePotion) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.posX, __instance.posY, 150.0F * Settings.scale, 1.3F, new Color(1.0F, 0.8F, 0.1F, 1.0F)));
-            } else if (__instance instanceof com.megacrit.cardcrawl.potions.BottledMiracle) {
-                ShaderLogic.lightsToRender.add(new LightData(__instance.posX, __instance.posY, 100.0F * Settings.scale, 0.6F, Color.YELLOW));
-            } else {
-                CustomLightPatches.processCustomLights(__instance);
-            }
+            CustomLightPatches.processCustomLights(__instance);
         }
     }
 

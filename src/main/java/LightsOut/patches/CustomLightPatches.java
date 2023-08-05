@@ -30,8 +30,8 @@ public class CustomLightPatches {
     private static final String GET_COLOR_METHOD = "_lightsOutGetColor";
     private static final String GET_BG_XYRI_METHOD = "_lightsOutGetCharSelectXYRI";
     private static final String GET_BG_COLOR_METHOD = "_lightsOutGetCharSelectColor";
-    private static final HashMap<Class<?>, CustomLightData> customLights = new HashMap<>();
-    private static final HashMap<Class<?>, CustomLightData> customCharSelectLights = new HashMap<>();
+    public static final HashMap<Class<?>, CustomLightData> customLights = new HashMap<>();
+    public static final HashMap<Class<?>, CustomLightData> customCharSelectLights = new HashMap<>();
 
     public static void processCustomLights(Object o) {
         if (LightsOutMod.modEnabled) {

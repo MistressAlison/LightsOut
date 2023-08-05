@@ -8,9 +8,8 @@ import com.megacrit.cardcrawl.characters.Defect;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.beyond.Exploder;
-import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.potions.EnergyPotion;
+import com.megacrit.cardcrawl.orbs.*;
+import com.megacrit.cardcrawl.potions.*;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.FastSmokeParticle;
@@ -39,7 +38,7 @@ public class PatchFactory {
     }
 
     public static String makeColorMethod(String color) {
-        return "public com.badlogic.gdx.graphics.Color[] _lightsOutGetColor() { return new com.badlogic.gdx.graphics.Color[] {"+color+"};}";
+        return "public com.badlogic.gdx.graphics.Color[] _lightsOutGetColor() { return new com.badlogic.gdx.graphics.Color[]{"+color+"};}";
     }
 
     public static String colorToString(Color... colors) {
@@ -120,10 +119,19 @@ public class PatchFactory {
         public static void patch(CtBehavior ctBehavior) throws NotFoundException {
             //Potions
             addPotion(EnergyPotion.class, 100f, 1.0f);
+            addPotion(FirePotion.class, 250f, 1.2f);
+            addPotion(BottledMiracle.class, 100f, 1.0f);
+            addPotion(EntropicBrew.class, 100f, 1.0f);
+            addPotion(DuplicationPotion.class, 100f, 1.0f);
+            addPotion(DistilledChaosPotion.class, 100f, 1.0f);
 
             //Relics
 
             //Orbs
+            addOrb(Lightning.class, 200f, 1.2f, new Color(1.0f, 1.0f, 0.6f, 1.0f));
+            addOrb(Frost.class, 100f, 0.5f, Color.CYAN);
+            addOrb(Plasma.class, 300f, 1.5f, new Color(0.7F, 0.7F, 1.0F, 1.0F));
+            addOrb(Dark.class, 100f, 0.5f, Color.PURPLE);
 
             //Cards
 
