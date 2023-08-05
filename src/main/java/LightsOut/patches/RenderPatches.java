@@ -406,8 +406,11 @@ public class RenderPatches {
     public static class CustomLightEntity {
         @SpirePostfixPatch
         public static void plz(MonsterGroup __instance) {
-            for (AbstractMonster m : __instance.monsters)
-                CustomLightPatches.processCustomLights(m);
+            for (AbstractMonster m : __instance.monsters) {
+                if (!m.isDeadOrEscaped()) {
+                    CustomLightPatches.processCustomLights(m);
+                }
+            }
         }
     }
 }
