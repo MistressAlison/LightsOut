@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import javassist.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PatchFactory {
     public static final ArrayList<PatchData> PATCHES = new ArrayList<>();
@@ -53,6 +54,24 @@ public class PatchFactory {
         return sb.toString();
     }
 
+    public static String boneToXYRI(String bone, float r, float i) {
+        return "skeleton.getX() + skeleton.findBone(\""+bone+"\").getWorldX(), skeleton.getY() + skeleton.findBone(\""+bone+"\").getWorldY(), "+r+SCALE+", "+i;
+    }
+
+    public static String bonesToXYRI(String[] bones, float[] r, float[] i) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (int index = 0 ; index < bones.length ; index++) {
+            if (!first) {
+                sb.append(", ");
+            } else {
+                first = false;
+            }
+            sb.append(boneToXYRI(bones[index], r[index], i[index]));
+        }
+        return sb.toString();
+    }
+
     public static void addPotion(Class<? extends AbstractPotion> clazz, float r, float i) {
         PATCHES.add(new PatchData(clazz, "posX, posY, "+r+SCALE+", "+i, "liquidColor"));
     }
@@ -66,7 +85,11 @@ public class PatchFactory {
     }
 
     public static void addEntity(Class<? extends AbstractCreature> clazz, String bone, float r, float i, Color c) {
-        PATCHES.add(new PatchData(clazz, "skeleton.getX() + skeleton.findBone(\""+bone+"\").getWorldX(), skeleton.getY() + skeleton.findBone(\""+bone+"\").getWorldY(), "+r+SCALE+", "+i, colorToString(c)));
+        PATCHES.add(new PatchData(clazz, boneToXYRI(bone, r, i), colorToString(c)));
+    }
+
+    public static void addEntity(Class<? extends AbstractCreature> clazz, String[] bones, float[] r, float[] i, Color[] c) {
+        PATCHES.add(new PatchData(clazz, bonesToXYRI(bones, r, i), colorToString(c)));
     }
 
     public static void addSimpleVFX(Class<? extends AbstractGameEffect> clazz, float r, float i) {
