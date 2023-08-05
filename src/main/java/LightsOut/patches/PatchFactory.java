@@ -11,8 +11,12 @@ import com.megacrit.cardcrawl.monsters.beyond.Exploder;
 import com.megacrit.cardcrawl.orbs.*;
 import com.megacrit.cardcrawl.potions.*;
 import com.megacrit.cardcrawl.relics.*;
-import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
-import com.megacrit.cardcrawl.vfx.FastSmokeParticle;
+import com.megacrit.cardcrawl.vfx.*;
+import com.megacrit.cardcrawl.vfx.campfire.CampfireBurningEffect;
+import com.megacrit.cardcrawl.vfx.campfire.CampfireEndingBurningEffect;
+import com.megacrit.cardcrawl.vfx.combat.*;
+import com.megacrit.cardcrawl.vfx.scene.*;
+import com.megacrit.cardcrawl.vfx.stance.StanceAuraEffect;
 import javassist.*;
 
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ import java.util.Arrays;
 public class PatchFactory {
     public static final ArrayList<PatchData> PATCHES = new ArrayList<>();
     public static final String SCALE = "*com.megacrit.cardcrawl.core.Settings.scale";
+    public static final String IMAGE = "com.megacrit.cardcrawl.helpers.ImageMaster.";
     public static class PatchData {
         public Class<?> classToPatch;
         public String xyriMethod;
@@ -137,13 +142,18 @@ public class PatchFactory {
 
             //Orbs
             addOrb(Lightning.class, 200f, 1.2f, new Color(1.0f, 1.0f, 0.6f, 1.0f));
+            addSimpleVFX(LightningOrbPassiveEffect.class, 200f, 0.1f);
+            addSimpleVFX(LightningOrbActivateEffect.class, 200f, 0.1f);
             addOrb(Frost.class, 100f, 0.5f, Color.CYAN);
             addOrb(Plasma.class, 300f, 1.5f, new Color(0.7F, 0.7F, 1.0F, 1.0F));
+            addSimpleVFX(PlasmaOrbPassiveEffect.class, 200f, 0.1f);
+            addSimpleVFX(PlasmaOrbActivateParticle.class, 200f, 0.1f);
             addOrb(Dark.class, 100f, 0.5f, Color.PURPLE);
 
             //Cards
 
             //Players
+            addSimpleVFX(IroncladVictoryFlameEffect.class, 200f, 0.1f);
             addEntity(Defect.class, "Hips_sphere", 200f, 0.3f, Color.CYAN);
 
             //Monsters
@@ -151,6 +161,46 @@ public class PatchFactory {
 
             //Effects
             addSimpleVFX(FastSmokeParticle.class, 300f, 2f);
+            addSimpleVFX(LightningEffect.class, 2000f, 2f);
+            addSimpleVFX(MindblastEffect.class, 2000f, 2f);
+            addSimpleVFX(LaserBeamEffect.class, 2000f, 2f);
+
+            addSimpleVFX(GhostlyFireEffect.class, 400f, 0.03f);
+            addSimpleVFX(GhostlyWeakFireEffect.class, 400f, 0.03f);
+
+            addSimpleVFX(StanceAuraEffect.class, 300f, 0.1f);
+
+            addSimpleVFX(TorchParticleSEffect.class, 200f, 0.1f);
+            addSimpleVFX(TorchParticleMEffect.class, 200f, 0.1f);
+            addSimpleVFX(TorchParticleLEffect.class, 200f, 0.1f);
+            addSimpleVFX(TorchParticleXLEffect.class, 200f, 0.1f);
+            addSimpleVFX(StaffFireEffect.class, 200f, 0.1f);
+            addSimpleVFX(GlowyFireEyesEffect.class, 200f, 0.1f);
+            addSimpleVFX(FireBurstParticleEffect.class, 200f, 0.1f);
+            addSimpleVFX(TorchHeadFireEffect.class, 200f, 0.1f);
+            addSimpleVFX(GiantFireEffect.class, 200f, 0.1f);
+            addSimpleVFX(LightRayFlyOutEffect.class, 200f, 0.1f);
+            addSimpleVFX(CampfireBurningEffect.class, 200f, 0.1f);
+            addSimpleVFX(CampfireEndingBurningEffect.class, 200f, 0.1f);
+            addSimpleVFX(FlameParticleEffect.class, 200f, 0.1f);
+            addSimpleVFX(RedFireBurstParticleEffect.class, 200f, 0.1f);
+            addSimpleVFX(SlowFireParticleEffect.class, 200f, 0.1f);
+            addSimpleVFX(RoomShineEffect.class, 200f, 0.1f);
+            addSimpleVFX(RoomShineEffect2.class, 200f, 0.1f);
+            addCustom(LightFlareParticleEffect.class, "pos.x, pos.y, 200f"+SCALE+", 0.1f", "color");
+            addCustom(AwakenedEyeParticle.class, "x + "+IMAGE+".ROOM_SHINE_2.packedWidth / 2.0F, y + "+IMAGE+".ROOM_SHINE_2.packedHeight / 2.0F, 200f"+SCALE+", 0.1f", "color");
+
+            addSimpleVFX(MiracleEffect.class, 200f, 1.0f);
+            addSimpleVFX(LightBulbEffect.class, 200f, 1.0f);
+
+            addSimpleVFX(GlowRelicParticle.class, 50f, 0.05f);
+
+            addSimpleVFX(BossChestShineEffect.class, 50f, 0.5f);
+            addSimpleVFX(FireFlyEffect.class, 50f, 0.5f);
+            addSimpleVFX(ShinySparkleEffect.class, 50f, 0.5f);
+            addSimpleVFX(ShineSparkleEffect.class, 50f, 0.5f);
+            addSimpleVFX(RarePotionParticleEffect.class, 50f, 0.5f);
+            addSimpleVFX(UncommonPotionParticleEffect.class, 50f, 0.5f);
 
             for (PatchData data : PATCHES) {
                 CtClass ctClass = ctBehavior.getDeclaringClass().getClassPool().get(data.classToPatch.getName());

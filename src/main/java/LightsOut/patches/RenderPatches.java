@@ -3,15 +3,15 @@ package LightsOut.patches;
 import LightsOut.util.CustomLightData;
 import LightsOut.util.LightData;
 import LightsOut.util.ShaderLogic;
-import LightsOut.util.WidePotionHelper;
 import basemod.BaseMod;
-import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.evacipated.cardcrawl.mod.widepotions.potions.WidePotion;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -22,184 +22,42 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.orbs.Dark;
-import com.megacrit.cardcrawl.orbs.Lightning;
-import com.megacrit.cardcrawl.orbs.Plasma;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.scenes.TheCityScene;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
-import com.megacrit.cardcrawl.vfx.AwakenedEyeParticle;
-import com.megacrit.cardcrawl.vfx.BossChestShineEffect;
-import com.megacrit.cardcrawl.vfx.FireBurstParticleEffect;
-import com.megacrit.cardcrawl.vfx.GhostlyFireEffect;
-import com.megacrit.cardcrawl.vfx.GhostlyWeakFireEffect;
-import com.megacrit.cardcrawl.vfx.GlowRelicParticle;
-import com.megacrit.cardcrawl.vfx.GlowyFireEyesEffect;
-import com.megacrit.cardcrawl.vfx.RarePotionParticleEffect;
-import com.megacrit.cardcrawl.vfx.RoomShineEffect;
-import com.megacrit.cardcrawl.vfx.RoomShineEffect2;
-import com.megacrit.cardcrawl.vfx.StaffFireEffect;
-import com.megacrit.cardcrawl.vfx.TorchHeadFireEffect;
-import com.megacrit.cardcrawl.vfx.UncommonPotionParticleEffect;
-import com.megacrit.cardcrawl.vfx.campfire.CampfireBurningEffect;
-import com.megacrit.cardcrawl.vfx.campfire.CampfireEndingBurningEffect;
-import com.megacrit.cardcrawl.vfx.combat.FlameParticleEffect;
 import com.megacrit.cardcrawl.vfx.combat.FlashAtkImgEffect;
-import com.megacrit.cardcrawl.vfx.combat.GiantFireEffect;
-import com.megacrit.cardcrawl.vfx.combat.LaserBeamEffect;
-import com.megacrit.cardcrawl.vfx.combat.LightBulbEffect;
-import com.megacrit.cardcrawl.vfx.combat.LightFlareParticleEffect;
-import com.megacrit.cardcrawl.vfx.combat.LightRayFlyOutEffect;
-import com.megacrit.cardcrawl.vfx.combat.LightningEffect;
-import com.megacrit.cardcrawl.vfx.combat.LightningOrbActivateEffect;
-import com.megacrit.cardcrawl.vfx.combat.LightningOrbPassiveEffect;
-import com.megacrit.cardcrawl.vfx.combat.MindblastEffect;
-import com.megacrit.cardcrawl.vfx.combat.MiracleEffect;
-import com.megacrit.cardcrawl.vfx.combat.PlasmaOrbActivateParticle;
-import com.megacrit.cardcrawl.vfx.combat.PlasmaOrbPassiveEffect;
-import com.megacrit.cardcrawl.vfx.combat.RedFireBurstParticleEffect;
 import com.megacrit.cardcrawl.vfx.combat.SmallLaserEffect;
-import com.megacrit.cardcrawl.vfx.scene.FireFlyEffect;
-import com.megacrit.cardcrawl.vfx.scene.IroncladVictoryFlameEffect;
 import com.megacrit.cardcrawl.vfx.scene.LogoFlameEffect;
-import com.megacrit.cardcrawl.vfx.scene.ShinySparkleEffect;
-import com.megacrit.cardcrawl.vfx.scene.SlowFireParticleEffect;
-import com.megacrit.cardcrawl.vfx.scene.TorchParticleLEffect;
-import com.megacrit.cardcrawl.vfx.scene.TorchParticleMEffect;
-import com.megacrit.cardcrawl.vfx.scene.TorchParticleSEffect;
-import com.megacrit.cardcrawl.vfx.scene.TorchParticleXLEffect;
-import com.megacrit.cardcrawl.vfx.stance.StanceAuraEffect;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtNewMethod;
 
 public class RenderPatches {
-    @SpirePatches2({@SpirePatch2(clz = GhostlyFireEffect.class, method = "render"), @SpirePatch2(clz = GhostlyWeakFireEffect.class, method = "render")})
-    public static class AddLightsHexaghost {
-        @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance) {
-            Color c = (Color)ReflectionHacks.getPrivate(__instance, AbstractGameEffect.class, "color");
-            if (c == null)
-                throw new RuntimeException(__instance.getClass().getName());
-            ShaderLogic.lightsToRender.add(new LightData((
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "x")).floatValue(), (
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "y")).floatValue(), ShaderLogic.TORCH_RADIUS * 2.0F, 0.03F, c));
-        }
-    }
-
-    @SpirePatches2({@SpirePatch2(clz = TorchParticleSEffect.class, method = "render"), @SpirePatch2(clz = TorchParticleMEffect.class, method = "render"), @SpirePatch2(clz = TorchParticleLEffect.class, method = "render"), @SpirePatch2(clz = TorchParticleXLEffect.class, method = "render"), @SpirePatch2(clz = StaffFireEffect.class, method = "render"), @SpirePatch2(clz = GlowyFireEyesEffect.class, method = "render"), @SpirePatch2(clz = FireBurstParticleEffect.class, method = "render"), @SpirePatch2(clz = TorchHeadFireEffect.class, method = "render"), @SpirePatch2(clz = GiantFireEffect.class, method = "render"), @SpirePatch2(clz = LightRayFlyOutEffect.class, method = "render"), @SpirePatch2(clz = CampfireBurningEffect.class, method = "render"), @SpirePatch2(clz = CampfireEndingBurningEffect.class, method = "render"), @SpirePatch2(clz = FlameParticleEffect.class, method = "render"), @SpirePatch2(clz = LightningOrbPassiveEffect.class, method = "render"), @SpirePatch2(clz = LightningOrbActivateEffect.class, method = "render"), @SpirePatch2(clz = PlasmaOrbActivateParticle.class, method = "render"), @SpirePatch2(clz = PlasmaOrbPassiveEffect.class, method = "render"), @SpirePatch2(clz = RedFireBurstParticleEffect.class, method = "render"), @SpirePatch2(clz = IroncladVictoryFlameEffect.class, method = "render"), @SpirePatch2(clz = SlowFireParticleEffect.class, method = "render"), @SpirePatch2(clz = StanceAuraEffect.class, method = "render"), @SpirePatch2(clz = RoomShineEffect.class, method = "render"), @SpirePatch2(clz = RoomShineEffect2.class, method = "render")})
-    public static class AddLightsGenericLow {
-        @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance) {
-            Color c = (Color)ReflectionHacks.getPrivate(__instance, AbstractGameEffect.class, "color");
-            if (c == null)
-                throw new RuntimeException(__instance.getClass().getName() + " failed to get Color");
-            ShaderLogic.lightsToRender.add(new LightData((
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "x")).floatValue(), (
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "y")).floatValue(), ShaderLogic.TORCH_RADIUS, 0.1F, c));
-        }
-    }
-
-    @SpirePatches2({@SpirePatch2(clz = MiracleEffect.class, method = "render"), @SpirePatch2(clz = LightBulbEffect.class, method = "render")})
-    public static class AddLightsGenericHigh {
-        @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance) {
-            Color c = (Color)ReflectionHacks.getPrivate(__instance, AbstractGameEffect.class, "color");
-            if (c == null)
-                throw new RuntimeException(__instance.getClass().getName());
-            ShaderLogic.lightsToRender.add(new LightData((
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "x")).floatValue(), (
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "y")).floatValue(), ShaderLogic.TORCH_RADIUS, 1.0F, c));
-        }
-    }
-
-    @SpirePatch2(clz = GlowRelicParticle.class, method = "render")
-    public static class AddLightsShineLow {
-        @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance) {
-            Color c = (Color)ReflectionHacks.getPrivate(__instance, AbstractGameEffect.class, "color");
-            ShaderLogic.lightsToRender.add(new LightData((
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "x")).floatValue(), (
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "y")).floatValue(), ShaderLogic.SHINE_RADIUS, 0.05F, c));
-        }
-    }
-
-    @SpirePatches2({@SpirePatch2(clz = BossChestShineEffect.class, method = "render"), @SpirePatch2(clz = FireFlyEffect.class, method = "render"), @SpirePatch2(clz = ShinySparkleEffect.class, method = "render"), @SpirePatch2(clz = RarePotionParticleEffect.class, method = "render"), @SpirePatch2(clz = UncommonPotionParticleEffect.class, method = "render")})
-    public static class AddLightsShine {
-        @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance) {
-            Color c = (Color)ReflectionHacks.getPrivate(__instance, AbstractGameEffect.class, "color");
-            ShaderLogic.lightsToRender.add(new LightData((
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "x")).floatValue(), (
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "y")).floatValue(), ShaderLogic.SHINE_RADIUS, 0.5F, c));
-        }
-    }
-
-    @SpirePatch2(clz = AwakenedEyeParticle.class, method = "render")
-    public static class AddLightsAwakenedEyes {
-        @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance) {
-            Color c = (Color)ReflectionHacks.getPrivate(__instance, AbstractGameEffect.class, "color");
-            if (c == null)
-                throw new RuntimeException(__instance.getClass().getName());
-            ShaderLogic.lightsToRender.add(new LightData((
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "x")).floatValue() + ImageMaster.ROOM_SHINE_2.packedWidth / 2.0F, (
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "y")).floatValue() + ImageMaster.ROOM_SHINE_2.packedHeight / 2.0F, ShaderLogic.TORCH_RADIUS, 0.1F, c));
-        }
-    }
-
-    @SpirePatches2({@SpirePatch2(clz = LightningEffect.class, method = "render"), @SpirePatch2(clz = MindblastEffect.class, method = "render"), @SpirePatch2(clz = LaserBeamEffect.class, method = "render")})
-    public static class AddLightsFullBright {
-        @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance) {
-            Color c = (Color)ReflectionHacks.getPrivate(__instance, AbstractGameEffect.class, "color");
-            if (c == null)
-                throw new RuntimeException(__instance.getClass().getName());
-            ShaderLogic.lightsToRender.add(new LightData((
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "x")).floatValue(), (
-                    (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "y")).floatValue(), ShaderLogic.TORCH_RADIUS * 100.0F, 2.0F, c));
-        }
-    }
-
     @SpirePatch2(clz = SmallLaserEffect.class, method = "render")
     public static class AddLightsSmallLaser {
         @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance) {
-            Color c = (Color)ReflectionHacks.getPrivate(__instance, AbstractGameEffect.class, "color");
-            float startX = ((Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "sX")).floatValue();
-            float endX = ((Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "dX")).floatValue();
-            float startY = ((Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "sY")).floatValue();
-            float endY = ((Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "dY")).floatValue();
-            Vector2 step = new Vector2(endX - startX, endY - startY);
-            for (int i = 0; i < 10; i++)
-                ShaderLogic.lightsToRender.add(new LightData(startX + i * step.x / 10.0F, startY + i * step.y / 10.0F, ShaderLogic.TORCH_RADIUS, 0.5F, c));
-        }
-    }
-
-    @SpirePatch2(clz = LightFlareParticleEffect.class, method = "render")
-    public static class AddLightsFlareParticle {
-        @SpirePostfixPatch
-        public static void add(LightFlareParticleEffect __instance) {
-            Vector2 vec = (Vector2)ReflectionHacks.getPrivate(__instance, LightFlareParticleEffect.class, "pos");
-            Color c = (Color)ReflectionHacks.getPrivate(__instance, AbstractGameEffect.class, "color");
-            ShaderLogic.lightsToRender.add(new LightData(vec.x, vec.y, ShaderLogic.TORCH_RADIUS, 0.1F, c));
+        public static void add(AbstractGameEffect __instance, Color ___color, float ___sX, float ___sY, float ___dX, float ___dY) {
+            Vector2 step = new Vector2(___dX - ___sX, ___dY - ___sY);
+            for (int i = 0; i < 10; i++) {
+                ShaderLogic.lightsToRender.add(new LightData(___sX + i * step.x / 10.0F, ___sY + i * step.y / 10.0F, ShaderLogic.TORCH_RADIUS, 0.5F, ___color));
+            }
         }
     }
 
     @SpirePatch2(clz = FlashAtkImgEffect.class, method = "render")
     public static class AddLightsFireDamage {
+        private static final Color FIRE_COLOR = new Color(1.0f, 0.8f, 0.3f, 1.0f);
+
         @SpirePostfixPatch
-        public static void add(FlashAtkImgEffect __instance) {
+        public static void add(FlashAtkImgEffect __instance, float ___x, float ___y) {
             if (__instance.img == ImageMaster.ATK_FIRE) {
-                Color c = Color.RED;
-                ShaderLogic.lightsToRender.add(new LightData((
-                        (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "x")).floatValue(), (
-                        (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "y")).floatValue(), ShaderLogic.TORCH_RADIUS, 1.0F, c));
+                ShaderLogic.lightsToRender.add(new LightData(___x, ___y, ShaderLogic.TORCH_RADIUS, 1.0F, FIRE_COLOR));
             }
         }
     }
@@ -209,17 +67,18 @@ public class RenderPatches {
         private static final Color TITLE_COLOR = new Color(0.7F, 0.8F, 1.0F, 1.0F);
 
         @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance, float x, float y) {
+        public static void add(AbstractGameEffect __instance, float x, float y, float ___offsetX, float ___offsetY) {
             if (shouldRenderFire())
-                ShaderLogic.lightsToRender.add(new LightData(x + 15.0F * Settings.scale + (
-                        (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "offsetX")).floatValue(), y + (
-                        (Float)ReflectionHacks.getPrivate(__instance, __instance.getClass(), "offsetY")).floatValue(), ShaderLogic.TORCH_RADIUS * 2.0F, 0.08F, TITLE_COLOR));
+                ShaderLogic.lightsToRender.add(new LightData(
+                        x + 15.0F * Settings.scale + ___offsetX, y + ___offsetY,
+                        ShaderLogic.TORCH_RADIUS * 2.0F, 0.08F, TITLE_COLOR));
         }
 
         private static boolean shouldRenderFire() {
-            return (!CardCrawlGame.isInARun() && CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.DOOR_UNLOCK && (CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.CHAR_SELECT ||
-
-                    !CardCrawlGame.mainMenuScreen.charSelectScreen.options.stream().anyMatch(o -> o.selected)) && !BaseMod.modSettingsUp);
+            return !CardCrawlGame.isInARun() &&
+                    CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.DOOR_UNLOCK &&
+                    (CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.CHAR_SELECT || CardCrawlGame.mainMenuScreen.charSelectScreen.options.stream().noneMatch(o -> o.selected)) &&
+                    !BaseMod.modSettingsUp;
         }
     }
 
@@ -229,15 +88,16 @@ public class RenderPatches {
 
         @SpirePostfixPatch
         public static void plz(TheCityScene __instance, boolean ___renderFg2) {
-            if (!___renderFg2)
+            if (!___renderFg2) {
                 ShaderLogic.lightsToRender.add(new LightData(1848.0F * Settings.xScale, 314.0F * Settings.yScale, 250.0F, 1.0F, FG2_COLOR));
+            }
+
         }
     }
 
     @SpirePatch2(clz = TheCityScene.class, method = "renderCombatRoomBg")
     public static class AddLightsCityBG {
         private static final Color BG_COLOR = new Color(1.0F, 0.5F, 0.2F, 1.0F);
-
         private static final Color MG_COLOR = new Color(1.0F, 1.0F, 0.2F, 1.0F);
 
         @SpirePostfixPatch
@@ -245,8 +105,9 @@ public class RenderPatches {
             ShaderLogic.lightsToRender.add(new LightData(Settings.WIDTH / 2.0F, (Settings.HEIGHT * 3) / 5.0F, Settings.HEIGHT, 0.05F, BG_COLOR));
             if (!___renderMgAlt) {
                 ShaderLogic.lightsToRender.add(new LightData(199.0F * Settings.xScale, 421.0F * Settings.yScale, 300.0F, 1.2F, MG_COLOR));
-                if (___renderMgGlow)
+                if (___renderMgGlow) {
                     ShaderLogic.lightsToRender.add(new LightData(199.0F * Settings.xScale, 421.0F * Settings.yScale, 400.0F, ___whiteColor.a, MG_COLOR));
+                }
             }
         }
     }
@@ -265,16 +126,13 @@ public class RenderPatches {
     @SpirePatch2(clz = CharacterOption.class, method = "render")
     public static class AddLightsToCharSelect {
         private static final float EYE_X = 1350.0F * Settings.xScale;
-
         private static final float EYE_Y = 634.0F * Settings.yScale;
-
         private static final float MAX_X = 10.0F * Settings.xScale;
-
         private static final float MAX_Y = 5.0F * Settings.yScale;
 
         @SpirePostfixPatch
         public static void add(CharacterOption __instance) {
-            if (__instance.selected)
+            if (__instance.selected) {
                 if (__instance.c.chosenClass == AbstractPlayer.PlayerClass.IRONCLAD) {
                     Vector2 dir = new Vector2(InputHelper.mX - EYE_X, InputHelper.mY - EYE_Y);
                     float len = Math.min(1.0F, dir.len() / 500.0F);
@@ -306,6 +164,7 @@ public class RenderPatches {
                 } else {
                     CustomLightPatches.processCustomCharacterSelectLights(__instance.c);
                 }
+            }
         }
     }
 
@@ -385,9 +244,11 @@ public class RenderPatches {
         @SpirePostfixPatch
         public static void plz(AbstractPlayer __instance) {
             CustomLightPatches.processCustomLights(__instance);
-            if (((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT || AbstractDungeon.getCurrRoom() instanceof com.megacrit.cardcrawl.rooms.MonsterRoom) && !__instance.isDead)
-                for (AbstractOrb o : __instance.orbs)
+            if (((AbstractDungeon.getCurrRoom()).phase == AbstractRoom.RoomPhase.COMBAT || AbstractDungeon.getCurrRoom() instanceof MonsterRoom) && !__instance.isDead) {
+                for (AbstractOrb o : __instance.orbs) {
                     CustomLightPatches.processCustomLights(o);
+                }
+            }
         }
     }
 
@@ -395,10 +256,12 @@ public class RenderPatches {
     public static class CustomLightDungeon {
         @SpirePostfixPatch
         public static void plz(AbstractDungeon __instance) {
-            for (AbstractGameEffect e : AbstractDungeon.effectList)
+            for (AbstractGameEffect e : AbstractDungeon.effectList) {
                 CustomLightPatches.processCustomLights(e);
-            for (AbstractGameEffect e : AbstractDungeon.topLevelEffects)
+            }
+            for (AbstractGameEffect e : AbstractDungeon.topLevelEffects) {
                 CustomLightPatches.processCustomLights(e);
+            }
         }
     }
 
