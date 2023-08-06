@@ -151,7 +151,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         currentYposition -= spacingY;
 
         ModLabel radLabel = new ModLabel(TEXT[2], 400.0F, currentYposition, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, modLabel -> {});
-        ModMinMaxSlider radSlider = new ModMinMaxSlider("", 400.0F + sliderOffset, currentYposition + 7.0F, 180.0F, 540.0F, LOConfig.getInt(MOUSE_RADIUS), "%.0f", settingsPanel, slider -> {
+        ModMinMaxSlider radSlider = new ModMinMaxSlider("", 400.0F + sliderOffset, currentYposition + 7.0F, 0.0F, 540.0F, LOConfig.getInt(MOUSE_RADIUS), "%.0f", settingsPanel, slider -> {
             LOConfig.setInt(MOUSE_RADIUS, Math.round(slider.getValue()));
             mouseRadius = Math.round(slider.getValue());
             try {

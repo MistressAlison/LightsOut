@@ -20,12 +20,11 @@ import com.megacrit.cardcrawl.vfx.stance.StanceAuraEffect;
 import javassist.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PatchFactory {
     public static final ArrayList<PatchData> PATCHES = new ArrayList<>();
     public static final String SCALE = "*com.megacrit.cardcrawl.core.Settings.scale";
-    public static final String IMAGE = "com.megacrit.cardcrawl.helpers.ImageMaster.";
+    public static final String IMAGE = "com.megacrit.cardcrawl.helpers.ImageMaster";
     public static class PatchData {
         public Class<?> classToPatch;
         public String xyriMethod;
