@@ -23,6 +23,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
@@ -248,6 +249,9 @@ public class RenderPatches {
                 for (AbstractOrb o : __instance.orbs) {
                     CustomLightPatches.processCustomLights(o);
                 }
+                for (AbstractPower p : __instance.powers) {
+                    CustomLightPatches.processCustomLights(p);
+                }
             }
         }
     }
@@ -272,6 +276,9 @@ public class RenderPatches {
             for (AbstractMonster m : __instance.monsters) {
                 if (!m.isDeadOrEscaped()) {
                     CustomLightPatches.processCustomLights(m);
+                    for (AbstractPower p : m.powers) {
+                        CustomLightPatches.processCustomLights(p);
+                    }
                 }
             }
         }

@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.characters.Defect;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.beyond.Exploder;
+import com.megacrit.cardcrawl.monsters.beyond.SnakeDagger;
 import com.megacrit.cardcrawl.orbs.*;
 import com.megacrit.cardcrawl.potions.*;
 import com.megacrit.cardcrawl.relics.*;
@@ -30,7 +31,7 @@ public class PatchFactory {
         public String xyriMethod;
         public String colorMethod;
 
-        public PatchData(Class classToPatch, String xyri, String color) {
+        public PatchData(Class<?> classToPatch, String xyri, String color) {
             this.classToPatch = classToPatch;
             this.xyriMethod = makeXYRIMethod(xyri);
             this.colorMethod = makeColorMethod(color);
@@ -128,9 +129,10 @@ public class PatchFactory {
             addPotion(EntropicBrew.class, 100f, 1.0f);
             addPotion(DuplicationPotion.class, 100f, 1.0f);
             addPotion(DistilledChaosPotion.class, 100f, 1.0f);
+            addPotion(FairyPotion.class, 100f, 1.0f);
 
             //Relics
-            addRelic(BurningBlood.class, 50f, 0.5f, new Color(1.0f, 0.5f, 0.2f, 1.0f));
+            addRelic(BurningBlood.class, 100f, 0.8f, new Color(1.0f, 0.5f, 0.2f, 1.0f));
             addRelic(Lantern.class, 300f, 2.0f, new Color(1.0F, 0.96F, 0.87F, 1.0F));
             addRelic(NuclearBattery.class, 300f, 2.0f, new Color(0.7F, 0.7F, 1.0F, 1.0F));
             addRelic(FusionHammer.class, 150f, 0.8f, new Color(1.0F, 0.4F, 0.8F, 1.0F));
@@ -151,12 +153,16 @@ public class PatchFactory {
 
             //Cards
 
+            //Powers
+
             //Players
             addSimpleVFX(IroncladVictoryFlameEffect.class, 200f, 0.1f);
             addEntity(Defect.class, "Hips_sphere", 200f, 0.3f, Color.CYAN);
 
             //Monsters
             addEntity(Exploder.class, "inside", 200f, 1.2f, new Color(1.0f, 1.0f, 0.5f, 1.0f));
+            addEntity(SnakeDagger.class, "root", 100f, 0.8f, new Color(0.5f, 1.0f, 0.5f, 1.0f));
+            //Repto dagger
 
             //Effects
             addSimpleVFX(FastSmokeParticle.class, 300f, 2f);
@@ -179,6 +185,7 @@ public class PatchFactory {
             addSimpleVFX(TorchHeadFireEffect.class, 200f, 0.1f);
             addSimpleVFX(GiantFireEffect.class, 200f, 0.1f);
             addSimpleVFX(LightRayFlyOutEffect.class, 200f, 0.1f);
+            //TODO campfire broken
             addSimpleVFX(CampfireBurningEffect.class, 200f, 0.1f);
             addSimpleVFX(CampfireEndingBurningEffect.class, 200f, 0.1f);
             addSimpleVFX(FlameParticleEffect.class, 200f, 0.1f);
@@ -200,6 +207,7 @@ public class PatchFactory {
             addSimpleVFX(ShineSparkleEffect.class, 50f, 0.5f);
             addSimpleVFX(RarePotionParticleEffect.class, 50f, 0.5f);
             addSimpleVFX(UncommonPotionParticleEffect.class, 50f, 0.5f);
+            addSimpleVFX(ImpactSparkEffect.class, 50f, 0.5f);
 
             for (PatchData data : PATCHES) {
                 CtClass ctClass = ctBehavior.getDeclaringClass().getClassPool().get(data.classToPatch.getName());

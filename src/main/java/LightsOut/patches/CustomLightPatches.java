@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import javassist.CtClass;
@@ -68,7 +69,9 @@ public class CustomLightPatches {
                         new SubclassClassFilter(AbstractOrb.class),
                         new SubclassClassFilter(AbstractRelic.class),
                         new SubclassClassFilter(AbstractPotion.class),
-                        new SubclassClassFilter(AbstractCard.class)));
+                        new SubclassClassFilter(AbstractCard.class),
+                        new SubclassClassFilter(AbstractPower.class)
+                ));
 
         ArrayList<ClassInfo> foundClasses = new ArrayList<>();
         finder.findClasses(foundClasses, andClassFilter);
