@@ -26,8 +26,10 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.rooms.CampfireUI;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.scenes.TheCityScene;
+import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
@@ -38,6 +40,8 @@ import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtNewMethod;
+
+import java.util.ArrayList;
 
 public class RenderPatches {
     @SpirePatch2(clz = SmallLaserEffect.class, method = "render")
@@ -283,4 +287,27 @@ public class RenderPatches {
             }
         }
     }
+
+    @SpirePatch2(clz = SingleRelicViewPopup.class, method = "renderRelicImage")
+    public static class SRVLights {
+        @SpirePostfixPatch
+        public static void plz(SingleRelicViewPopup __instance, AbstractRelic ___relic) {
+            CustomLightData data = CustomLightPatches.customLights.get(___relic.getClass());
+            if (data != null) {
+                ShaderLogic.lightsToRender.add(new LightData(Settings.WIDTH/2f, Settings.HEIGHT/2f, data.getLightData(___relic).get(0).radius*2f, data.getLightData(___relic).get(0).intensity, data.getLightData(___relic).get(0).color));
+            }
+        }
+    }
+
+    @SpirePatch2(clz = CampfireUI.class, method = "renderFire")
+    public static class CampfireLights {
+        @SpirePostfixPatch
+        public static void getLights(CampfireUI __instance, ArrayList<AbstractGameEffect> ___flameEffect) {
+            for (AbstractGameEffect e : ___flameEffect) {
+                CustomLightPatches.processCustomLights(e);
+            }
+        }
+    }
+
+    //TODO Sweeping Beam prolly hardcode
 }
