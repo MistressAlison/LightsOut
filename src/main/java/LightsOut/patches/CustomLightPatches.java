@@ -82,13 +82,25 @@ public class CustomLightPatches {
                     if (ctm.getName().equals(GET_COLOR_METHOD)) {
                         try {
                             Class<?> clazz = Class.forName(classInfo.getClassName());
+                            if (!clazz.getName().startsWith("com.megacrit.cardcrawl")) {
+                                LightsOutMod.logger.info("Loading Custom Lights: "+clazz.getName());
+                            }
                             customLights.put(clazz, makeData(clazz, GET_XYRI_METHOD, GET_COLOR_METHOD));
-                        } catch (Exception ignored) {}
+                        } catch (Exception e) {
+                            LightsOutMod.logger.error("Failed to load Custom Lights:");
+                            e.printStackTrace();
+                        }
                     } else if (ctm.getName().equals(GET_BG_COLOR_METHOD)) {
                         try {
                             Class<?> clazz = Class.forName(classInfo.getClassName());
+                            if (!clazz.getName().startsWith("com.megacrit.cardcrawl")) {
+                                LightsOutMod.logger.info("Loading Custom Character Background Lights: "+clazz.getName());
+                            }
                             customCharSelectLights.put(clazz, makeData(clazz, GET_BG_XYRI_METHOD, GET_BG_COLOR_METHOD));
-                        } catch (Exception ignored) {}
+                        } catch (Exception e) {
+                            LightsOutMod.logger.error("Failed to load Custom Lights:");
+                            e.printStackTrace();
+                        }
                     }
                 }
             } catch (NotFoundException e) {

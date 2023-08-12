@@ -215,7 +215,8 @@ public class PatchFactory {
                     ctClass.addMethod(CtNewMethod.make(data.xyriMethod, ctClass));
                     ctClass.addMethod(CtNewMethod.make(data.colorMethod, ctClass));
                 } catch (CannotCompileException e) {
-                    throw new RuntimeException(e);
+                    LightsOutMod.logger.warn("Failed to patch class: "+data.classToPatch);
+                    e.printStackTrace();
                 }
             }
         }
