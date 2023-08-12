@@ -127,7 +127,7 @@ public class PatchFactory {
         @SpireRawPatch
         public static void patch(CtBehavior ctBehavior) throws NotFoundException {
             //Potions
-            addPotion(EnergyPotion.class, 3f, 1.0f);
+            addPotion(EnergyPotion.class, 100f, 1.0f);
             addPotion(FirePotion.class, 100f, 1.0f);
             addPotion(BottledMiracle.class, 100f, 1.0f);
             addPotion(EntropicBrew.class, 100f, 1.0f);
@@ -145,6 +145,8 @@ public class PatchFactory {
             addRelic(BottledFlame.class, 200f, 1.25f, new Color(1.0F, 0.6F, 0.2F, 1.0F));
             addRelic(BottledLightning.class, 200f, 1.5f, new Color(1.0F, 1.0F, 0.0F, 1.0F));
             addRelic(BlueCandle.class, 200f, 0.8f, new Color(0.4F, 0.0F, 1.0F, 1.0F));
+            addRelic(MutagenicStrength.class, 100f, 0.5f, new Color(1.0f, 0.5f, 0.2f, 1.0f));
+            addRelic(Ectoplasm.class, 100f, 0.4f, Color.LIME);
 
             //Orbs
             addOrb(Lightning.class, 200f, 1.2f, new Color(1.0f, 1.0f, 0.6f, 1.0f));
@@ -192,7 +194,6 @@ public class PatchFactory {
             addSimpleVFX(TorchHeadFireEffect.class, 200f, 0.1f);
             addSimpleVFX(GiantFireEffect.class, 200f, 0.1f);
             addSimpleVFX(LightRayFlyOutEffect.class, 200f, 0.1f);
-            //TODO campfire broken
             addSimpleVFX(CampfireBurningEffect.class, 200f, 0.1f);
             addSimpleVFX(CampfireEndingBurningEffect.class, 200f, 0.1f);
             addSimpleVFX(FlameParticleEffect.class, 200f, 0.1f);
@@ -202,12 +203,14 @@ public class PatchFactory {
             addSimpleVFX(RoomShineEffect2.class, 200f, 0.1f);
             addCustom(LightFlareParticleEffect.class, "pos.x, pos.y, 200f"+SCALE+", 0.1f", "color");
             addCustom(AwakenedEyeParticle.class, "x + "+IMAGE+".ROOM_SHINE_2.packedWidth / 2.0F, y + "+IMAGE+".ROOM_SHINE_2.packedHeight / 2.0F, 200f"+SCALE+", 0.1f", "color");
+            addCustom(UpgradeHammerImprintEffect.class, "x, y, 200f"+SCALE+", 0.1f", Color.YELLOW);
 
             addSimpleVFX(MiracleEffect.class, 200f, 1.0f);
             addSimpleVFX(LightBulbEffect.class, 200f, 1.0f);
 
             addSimpleVFX(GlowRelicParticle.class, 50f, 0.05f);
 
+            addSimpleVFX(UpgradeShineParticleEffect.class, 50f, 0.5f);
             addSimpleVFX(BossChestShineEffect.class, 50f, 0.5f);
             addSimpleVFX(FireFlyEffect.class, 50f, 0.5f);
             addSimpleVFX(ShinySparkleEffect.class, 50f, 0.5f);
