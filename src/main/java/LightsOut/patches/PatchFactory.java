@@ -215,9 +215,10 @@ public class PatchFactory {
             addSimpleVFX(FireFlyEffect.class, 50f, 0.5f);
             addSimpleVFX(ShinySparkleEffect.class, 50f, 0.5f);
             addSimpleVFX(ShineSparkleEffect.class, 50f, 0.5f);
-            addSimpleVFX(RarePotionParticleEffect.class, 50f, 0.5f);
-            addSimpleVFX(UncommonPotionParticleEffect.class, 50f, 0.5f);
             addSimpleVFX(ImpactSparkEffect.class, 50f, 0.5f);
+
+            addCustom(UncommonPotionParticleEffect.class, "oX + (hb == null ? x : hb.cX) + img.packedWidth / 2.0F, oY + (hb == null ? y : hb.cY) + img.packedHeight / 2.0F, 40f"+SCALE+",0.25f", "color");
+            addCustom(RarePotionParticleEffect.class, "oX + (hb == null ? x : hb.cX) + img.packedWidth / 2.0F, oY + (hb == null ? y : hb.cY) + img.packedHeight / 2.0F, 40f"+SCALE+",0.25f", "color");
 
             for (PatchData data : PATCHES) {
                 CtClass ctClass = ctBehavior.getDeclaringClass().getClassPool().get(data.classToPatch.getName());
