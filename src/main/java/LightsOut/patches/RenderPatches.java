@@ -35,6 +35,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.combat.FlashAtkImgEffect;
 import com.megacrit.cardcrawl.vfx.combat.SmallLaserEffect;
+import com.megacrit.cardcrawl.vfx.combat.SweepingBeamEffect;
 import com.megacrit.cardcrawl.vfx.scene.LogoFlameEffect;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
@@ -44,6 +45,7 @@ import javassist.CtNewMethod;
 import java.util.ArrayList;
 
 public class RenderPatches {
+    @SpirePatch2(clz = SweepingBeamEffect.class, method = "render")
     @SpirePatch2(clz = SmallLaserEffect.class, method = "render")
     public static class AddLightsSmallLaser {
         @SpirePostfixPatch
@@ -308,6 +310,4 @@ public class RenderPatches {
             }
         }
     }
-
-    //TODO Sweeping Beam prolly hardcode
 }
