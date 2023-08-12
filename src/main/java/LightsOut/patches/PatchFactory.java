@@ -1,6 +1,7 @@
 package LightsOut.patches;
 
 
+import LightsOut.LightsOutMod;
 import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch;
@@ -8,7 +9,10 @@ import com.megacrit.cardcrawl.characters.Defect;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.monsters.beyond.Exploder;
+import com.megacrit.cardcrawl.monsters.beyond.OrbWalker;
 import com.megacrit.cardcrawl.monsters.beyond.SnakeDagger;
+import com.megacrit.cardcrawl.monsters.beyond.WrithingMass;
+import com.megacrit.cardcrawl.monsters.exordium.Sentry;
 import com.megacrit.cardcrawl.orbs.*;
 import com.megacrit.cardcrawl.potions.*;
 import com.megacrit.cardcrawl.relics.*;
@@ -123,22 +127,23 @@ public class PatchFactory {
         @SpireRawPatch
         public static void patch(CtBehavior ctBehavior) throws NotFoundException {
             //Potions
-            addPotion(EnergyPotion.class, 100f, 1.0f);
-            addPotion(FirePotion.class, 250f, 1.2f);
+            addPotion(EnergyPotion.class, 3f, 1.0f);
+            addPotion(FirePotion.class, 100f, 1.0f);
             addPotion(BottledMiracle.class, 100f, 1.0f);
             addPotion(EntropicBrew.class, 100f, 1.0f);
             addPotion(DuplicationPotion.class, 100f, 1.0f);
             addPotion(DistilledChaosPotion.class, 100f, 1.0f);
-            addPotion(FairyPotion.class, 100f, 1.0f);
+            addCustom(FairyPotion.class, "posX, posY, "+50f+SCALE+", "+1.0, Color.LIME);
+            addCustom(GhostInAJar.class, "posX, posY, "+50f+SCALE+", "+1.0, Color.PURPLE);
 
             //Relics
             addRelic(BurningBlood.class, 100f, 0.8f, new Color(1.0f, 0.5f, 0.2f, 1.0f));
-            addRelic(Lantern.class, 300f, 2.0f, new Color(1.0F, 0.96F, 0.87F, 1.0F));
-            addRelic(NuclearBattery.class, 300f, 2.0f, new Color(0.7F, 0.7F, 1.0F, 1.0F));
+            addRelic(Lantern.class, 300f, 1.5f, new Color(1.0F, 0.96F, 0.87F, 1.0F));
+            addRelic(NuclearBattery.class, 300f, 1.5f, new Color(0.7F, 0.7F, 1.0F, 1.0F));
             addRelic(FusionHammer.class, 150f, 0.8f, new Color(1.0F, 0.4F, 0.8F, 1.0F));
             addRelic(HolyWater.class, 50f, 0.5f, new Color(1.0F, 0.6F, 0.9F, 1.0F));
-            addRelic(BottledFlame.class, 200f, 1.5f, new Color(1.0F, 0.6F, 0.2F, 1.0F));
-            addRelic(BottledLightning.class, 200f, 2.0f, new Color(1.0F, 1.0F, 0.0F, 1.0F));
+            addRelic(BottledFlame.class, 200f, 1.25f, new Color(1.0F, 0.6F, 0.2F, 1.0F));
+            addRelic(BottledLightning.class, 200f, 1.5f, new Color(1.0F, 1.0F, 0.0F, 1.0F));
             addRelic(BlueCandle.class, 200f, 0.8f, new Color(0.4F, 0.0F, 1.0F, 1.0F));
 
             //Orbs
@@ -162,7 +167,9 @@ public class PatchFactory {
             //Monsters
             addEntity(Exploder.class, "inside", 200f, 1.2f, new Color(1.0f, 1.0f, 0.5f, 1.0f));
             addEntity(SnakeDagger.class, "root", 100f, 0.8f, new Color(0.5f, 1.0f, 0.5f, 1.0f));
-            //Repto dagger
+            addEntity(OrbWalker.class, "orb_main", 200f, 1.2f, new Color(0.2f, 0.7f, 1.0f, 1.0f));
+            addEntity(Sentry.class, "jewel", 50f, 0.5f, new Color(0.2f, 0.7f, 1.0f, 1.0f));
+            addEntity(WrithingMass.class, "Eye", 50f, 0.7f, new Color(1.0f, 0.2f, 0.2f, 1.0f));
 
             //Effects
             addSimpleVFX(FastSmokeParticle.class, 300f, 2f);
