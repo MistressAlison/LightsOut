@@ -35,7 +35,23 @@ public class ShaderLogic implements ScreenPostProcessor {
             }
             ShaderProgram back = sb.getShader();
             sb.setShader(sp);
-            if (!CardCrawlGame.isPopupOpen) {
+            int size = Math.min(256, lightsToRender.size());
+            float[] xyri = new float[size * 4];
+            float[] rgba = new float[size * 4];
+            for (int i = 0; i < size; i++) {
+                xyri[4 * i] = lightsToRender.get(i).x;
+                xyri[4 * i + 1] = lightsToRender.get(i).y;
+                xyri[4 * i + 2] = lightsToRender.get(i).radius;
+                xyri[4 * i + 3] = lightsToRender.get(i).intensity;
+                rgba[4 * i] = lightsToRender.get(i).color.r;
+                rgba[4 * i + 1] = lightsToRender.get(i).color.g;
+                rgba[4 * i + 2] = lightsToRender.get(i).color.b;
+                rgba[4 * i + 3] = lightsToRender.get(i).color.a;
+            }
+            sp.setUniformi("u_lightObjects", size);
+            sp.setUniform4fv("u_objectXYRI[0]", xyri, 0, size * 4);
+            sp.setUniform4fv("u_objectColor[0]", rgba, 0, size * 4);
+            /*if (!CardCrawlGame.isPopupOpen) {
                 int size = Math.min(256, lightsToRender.size());
                 float[] xyri = new float[size * 4];
                 float[] rgba = new float[size * 4];
@@ -54,7 +70,7 @@ public class ShaderLogic implements ScreenPostProcessor {
                 sp.setUniform4fv("u_objectColor[0]", rgba, 0, size * 4);
             } else {
                 sp.setUniformi("u_lightObjects", 0);
-            }
+            }*/
             sp.setUniformf("x_time", time);
             sp.setUniformf("u_mouse", InputHelper.mX, InputHelper.mY);
             sp.setUniformf("m_scale", LightsOutMod.mouseRadius);
