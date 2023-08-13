@@ -15,6 +15,8 @@ import com.megacrit.cardcrawl.monsters.beyond.WrithingMass;
 import com.megacrit.cardcrawl.monsters.exordium.Sentry;
 import com.megacrit.cardcrawl.orbs.*;
 import com.megacrit.cardcrawl.potions.*;
+import com.megacrit.cardcrawl.powers.*;
+import com.megacrit.cardcrawl.powers.watcher.DevaPower;
 import com.megacrit.cardcrawl.relics.*;
 import com.megacrit.cardcrawl.vfx.*;
 import com.megacrit.cardcrawl.vfx.campfire.CampfireBurningEffect;
@@ -153,14 +155,22 @@ public class PatchFactory {
             addSimpleVFX(LightningOrbPassiveEffect.class, 200f, 0.1f);
             addSimpleVFX(LightningOrbActivateEffect.class, 200f, 0.1f);
             addOrb(Frost.class, 100f, 0.5f, Color.CYAN);
+            addSimpleVFX(FrostOrbPassiveEffect.class, 100f, 0.1f);
+            addCustom(FrostOrbActivateParticle.class, "cX, cY, 100f"+SCALE+", 0.3f", "color");
             addOrb(Plasma.class, 300f, 1.5f, new Color(0.7F, 0.7F, 1.0F, 1.0F));
             addSimpleVFX(PlasmaOrbPassiveEffect.class, 200f, 0.1f);
             addSimpleVFX(PlasmaOrbActivateParticle.class, 200f, 0.1f);
             addOrb(Dark.class, 100f, 0.5f, Color.PURPLE);
+            addSimpleVFX(DarkOrbPassiveEffect.class, 100f, 0.1f);
+            addSimpleVFX(DarkOrbActivateParticle.class, 100f, 0.1f);
 
             //Cards
 
             //Powers
+            addCustom(DemonFormPower.class, "owner.hb.cX, owner.hb.cY, (100f+10*amount)"+SCALE+",0.5f+0.05*amount", Color.RED);
+            addCustom(WraithFormPower.class, "owner.hb.cX, owner.hb.cY, (100f+10*amount)"+SCALE+",0.5f+0.05*amount", Color.GREEN);
+            addCustom(EchoPower.class, "owner.hb.cX, owner.hb.cY, (100f+10*amount)"+SCALE+",0.5f+0.05*amount", Color.BLUE);
+            addCustom(DevaPower.class, "owner.hb.cX, owner.hb.cY, (100f+10*amount)"+SCALE+",0.5f+0.05*amount", Color.PURPLE);
 
             //Players
             addSimpleVFX(IroncladVictoryFlameEffect.class, 200f, 0.1f);
