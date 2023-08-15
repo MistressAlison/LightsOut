@@ -59,7 +59,11 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
 
     public static final String COLORFUL_MAP = "colorfulMap";
 
-    public static boolean colorfulMap = true;
+    public static boolean colorfulMap = false;
+
+    public static final String GLOWING_MAP = "glowingMap";
+
+    public static boolean glowingMap = true;
 
     public static UIStrings uiStrings;
 
@@ -90,6 +94,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         LODefaultSettings.setProperty(TORCH_MODE_DECAY, String.valueOf(torchModeDecay));
         LODefaultSettings.setProperty(AMBIENT_LIGHT, String.valueOf(ambientLight));
         LODefaultSettings.setProperty(COLORFUL_MAP, Boolean.toString(colorfulMap));
+        LODefaultSettings.setProperty(GLOWING_MAP, Boolean.toString(glowingMap));
         try {
             LOConfig = new SpireConfig(modID, FILE_NAME, LODefaultSettings);
             modEnabled = LOConfig.getBool(ENABLE_MOD);
@@ -98,6 +103,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
             torchModeDecay = LOConfig.getInt(TORCH_MODE_DECAY);
             ambientLight = LOConfig.getInt(AMBIENT_LIGHT);
             colorfulMap = LOConfig.getBool(COLORFUL_MAP);
+            glowingMap = LOConfig.getBool(GLOWING_MAP);
         } catch (IOException e) {
             logger.error("Lights Out SpireConfig initialization failed:");
             e.printStackTrace();
@@ -137,6 +143,17 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
             } else {
                 CardCrawlGame.sound.play("SCENE_TORCH_EXTINGUISH");
             }
+            try {
+                LOConfig.save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        currentYposition -= spacingY;
+
+        ModLabeledToggleButton glowingMapButton = new ModLabeledToggleButton(TEXT[6], 360.0F, currentYposition - 10.0F, Settings.CREAM_COLOR, FontHelper.charDescFont, LOConfig.getBool(GLOWING_MAP), settingsPanel, label -> {},button -> {
+            LOConfig.setBool(GLOWING_MAP, button.enabled);
+            glowingMap = button.enabled;
             try {
                 LOConfig.save();
             } catch (IOException e) {
@@ -205,6 +222,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         currentYposition -= spacingY;
 
         settingsPanel.addUIElement(enableModsButton);
+        settingsPanel.addUIElement(glowingMapButton);
         settingsPanel.addUIElement(colorfulButton);
         settingsPanel.addUIElement(torchModeButton);
         settingsPanel.addUIElement(radLabel);

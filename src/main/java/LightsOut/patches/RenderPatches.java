@@ -1,31 +1,12 @@
 package LightsOut.patches;
 
-import LightsOut.LightsOutMod;
-import LightsOut.util.CustomLightData;
-import LightsOut.util.LightData;
-import LightsOut.util.ShaderLogic;
-import basemod.BaseMod;
-import basemod.patches.whatmod.WhatMod;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Vector2;
-import com.evacipated.cardcrawl.mod.widepotions.potions.WidePotion;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.map.DungeonMap;
-import com.megacrit.cardcrawl.map.Legend;
 import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
@@ -36,103 +17,12 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.CampfireUI;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
-import com.megacrit.cardcrawl.scenes.TheCityScene;
-import com.megacrit.cardcrawl.screens.DungeonMapScreen;
-import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
-import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
-import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import com.megacrit.cardcrawl.screens.options.OptionsPanel;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.FlameAnimationEffect;
-import com.megacrit.cardcrawl.vfx.combat.FlashAtkImgEffect;
-import com.megacrit.cardcrawl.vfx.combat.SmallLaserEffect;
-import com.megacrit.cardcrawl.vfx.combat.SweepingBeamEffect;
-import com.megacrit.cardcrawl.vfx.scene.LightFlareLEffect;
-import com.megacrit.cardcrawl.vfx.scene.LogoFlameEffect;
-import com.megacrit.cardcrawl.vfx.scene.TorchParticleLEffect;
-import javassist.CannotCompileException;
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtNewMethod;
 
 import java.util.ArrayList;
 
 public class RenderPatches {
-    @SpirePatch2(clz = SweepingBeamEffect.class, method = "render")
-    @SpirePatch2(clz = SmallLaserEffect.class, method = "render")
-    public static class AddLightsSmallLaser {
-        @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance, Color ___color, float ___sX, float ___sY, float ___dX, float ___dY) {
-            Vector2 step = new Vector2(___dX - ___sX, ___dY - ___sY);
-            for (int i = 0; i < 10; i++) {
-                ShaderLogic.lightsToRender.add(new LightData(___sX + i * step.x / 10.0F, ___sY + i * step.y / 10.0F, ShaderLogic.TORCH_RADIUS, 0.5F, ___color));
-            }
-        }
-    }
-
-    @SpirePatch2(clz = FlashAtkImgEffect.class, method = "render")
-    public static class AddLightsFireDamage {
-        private static final Color FIRE_COLOR = new Color(1.0f, 0.8f, 0.3f, 1.0f);
-
-        @SpirePostfixPatch
-        public static void add(FlashAtkImgEffect __instance, float ___x, float ___y) {
-            if (__instance.img == ImageMaster.ATK_FIRE) {
-                ShaderLogic.lightsToRender.add(new LightData(___x, ___y, ShaderLogic.TORCH_RADIUS, 1.0F, FIRE_COLOR));
-            }
-        }
-    }
-
-    @SpirePatch2(clz = LogoFlameEffect.class, method = "render", paramtypez = {SpriteBatch.class, float.class, float.class})
-    public static class AddLightsMainMenu {
-        private static final Color TITLE_COLOR = new Color(0.7F, 0.8F, 1.0F, 1.0F);
-
-        @SpirePostfixPatch
-        public static void add(AbstractGameEffect __instance, float x, float y, float ___offsetX, float ___offsetY) {
-            if (shouldRenderFire())
-                ShaderLogic.lightsToRender.add(new LightData(
-                        x + 15.0F * Settings.scale + ___offsetX, y + ___offsetY,
-                        ShaderLogic.TORCH_RADIUS * 2.0F, 0.06F, TITLE_COLOR));
-        }
-
-        private static boolean shouldRenderFire() {
-            return !CardCrawlGame.isInARun() &&
-                    CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.DOOR_UNLOCK &&
-                    CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.SETTINGS &&
-                    (CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.CHAR_SELECT || CardCrawlGame.mainMenuScreen.charSelectScreen.options.stream().noneMatch(o -> o.selected)) &&
-                    !BaseMod.modSettingsUp;
-        }
-    }
-
-    @SpirePatch2(clz = TheCityScene.class, method = "renderCombatRoomFg")
-    public static class AddLightsCityFG {
-        private static final Color FG2_COLOR = new Color(1.0F, 0.8F, 0.2F, 1.0F);
-
-        @SpirePostfixPatch
-        public static void plz(TheCityScene __instance, boolean ___renderFg2) {
-            if (!___renderFg2) {
-                ShaderLogic.lightsToRender.add(new LightData(1848.0F * Settings.xScale, 314.0F * Settings.yScale, 250.0F, 1.0F, FG2_COLOR));
-            }
-
-        }
-    }
-
-    @SpirePatch2(clz = TheCityScene.class, method = "renderCombatRoomBg")
-    public static class AddLightsCityBG {
-        private static final Color BG_COLOR = new Color(1.0F, 0.5F, 0.2F, 1.0F);
-        private static final Color MG_COLOR = new Color(1.0F, 1.0F, 0.2F, 1.0F);
-
-        @SpirePostfixPatch
-        public static void plz(TheCityScene __instance, boolean ___renderMgAlt, boolean ___renderMgGlow, Color ___whiteColor) {
-            ShaderLogic.lightsToRender.add(new LightData(Settings.WIDTH / 2.0F, (Settings.HEIGHT * 3) / 5.0F, Settings.HEIGHT, 0.05F, BG_COLOR));
-            if (!___renderMgAlt) {
-                ShaderLogic.lightsToRender.add(new LightData(199.0F * Settings.xScale, 421.0F * Settings.yScale, 300.0F, 1.2F, MG_COLOR));
-                if (___renderMgGlow) {
-                    ShaderLogic.lightsToRender.add(new LightData(199.0F * Settings.xScale, 421.0F * Settings.yScale, 400.0F, ___whiteColor.a, MG_COLOR));
-                }
-            }
-        }
-    }
-
     @SpirePatch2(clz = AbstractRelic.class, method = "renderInTopPanel")
     @SpirePatch2(clz = AbstractRelic.class, method = "render", paramtypez = {SpriteBatch.class})
     @SpirePatch2(clz = AbstractRelic.class, method = "render", paramtypez = {SpriteBatch.class, boolean.class, Color.class})
@@ -144,109 +34,11 @@ public class RenderPatches {
         }
     }
 
-    @SpirePatch2(clz = CharacterOption.class, method = "render")
-    public static class AddLightsToCharSelect {
-        private static final float EYE_X = 1350.0F * Settings.xScale;
-        private static final float EYE_Y = 634.0F * Settings.yScale;
-        private static final float MAX_X = 10.0F * Settings.xScale;
-        private static final float MAX_Y = 5.0F * Settings.yScale;
-
-        @SpirePostfixPatch
-        public static void add(CharacterOption __instance) {
-            if (__instance.selected) {
-                if (__instance.c.chosenClass == AbstractPlayer.PlayerClass.IRONCLAD) {
-                    Vector2 dir = new Vector2(InputHelper.mX - EYE_X, InputHelper.mY - EYE_Y);
-                    float len = Math.min(1.0F, dir.len() / 500.0F);
-                    dir.nor();
-                    float dx = dir.x * len * MAX_X;
-                    float dy = dir.y * len * MAX_Y;
-                    ShaderLogic.lightsToRender.add(new LightData(EYE_X + dx, EYE_Y + dy, ShaderLogic.SHINE_RADIUS / 2.0F, 1.5F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(103.0F * Settings.xScale, 774.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.25F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(298.0F * Settings.xScale, 933.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.25F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(417.0F * Settings.xScale, 644.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.5F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(389.0F * Settings.xScale, 548.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.25F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(185.0F * Settings.xScale, 496.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.125F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(280.0F * Settings.xScale, 285.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.25F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(1062.0F * Settings.xScale, 99.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.5F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(925.0F * Settings.xScale, 304.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.5F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(804.0F * Settings.xScale, 1035.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.5F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(821.0F * Settings.xScale, 461.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.125F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(727.0F * Settings.xScale, 579.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.125F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(821.0F * Settings.xScale, 679.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.25F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(760.0F * Settings.xScale, 829.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.25F, Color.RED));
-                    ShaderLogic.lightsToRender.add(new LightData(599.0F * Settings.xScale, 802.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS, 0.25F, Color.RED));
-                } else if (__instance.c.chosenClass == AbstractPlayer.PlayerClass.THE_SILENT) {
-                    ShaderLogic.lightsToRender.add(new LightData(1515.0F * Settings.xScale, 650.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS / 4.0F, 1.5F, Color.GREEN));
-                    ShaderLogic.lightsToRender.add(new LightData(1790.0F * Settings.xScale, 650.0F * Settings.yScale, ShaderLogic.SHINE_RADIUS / 4.0F, 1.5F, Color.GREEN));
-                } else if (__instance.c.chosenClass == AbstractPlayer.PlayerClass.DEFECT) {
-                    ShaderLogic.lightsToRender.add(new LightData(1065.0F * Settings.xScale, 575.0F * Settings.yScale, ShaderLogic.TORCH_RADIUS * 3.0F, 1.5F, Color.YELLOW));
-                } else if (__instance.c.chosenClass == AbstractPlayer.PlayerClass.WATCHER) {
-                    ShaderLogic.lightsToRender.add(new LightData(1720.0F * Settings.xScale, 885.0F * Settings.yScale, ShaderLogic.TORCH_RADIUS * 3.0F, 1.5F, Color.PURPLE));
-                } else {
-                    CustomLightPatches.processCustomCharacterSelectLights(__instance.c);
-                }
-            }
-        }
-    }
-
     @SpirePatch2(clz = AbstractCard.class, method = "renderImage")
     public static class AddLightsToCards {
         @SpirePostfixPatch
         public static void plz(AbstractCard __instance) {
             CustomLightPatches.processCustomLights(__instance);
-        }
-    }
-
-    @SpirePatch2(clz = WidePotion.class, method = SpirePatch.CONSTRUCTOR, requiredModId = "widepotions")
-    public static class WidePotionTest {
-        @SpireRawPatch
-        public static void patch(CtBehavior ctBehavior) throws CannotCompileException {
-            CtClass ctClass = ctBehavior.getDeclaringClass();
-            ctClass.addMethod(CtNewMethod.make("public float[] _lightsOutGetXYRI() {return LightsOut.patches.RenderPatches.WidePotionTest.wideXYRI(potion, posX, posY);}", ctClass));
-            ctClass.addMethod(CtNewMethod.make("public com.badlogic.gdx.graphics.Color[] _lightsOutGetColor() {return LightsOut.patches.RenderPatches.WidePotionTest.wideColor(potion);}", ctClass));
-        }
-
-        public static float[] wideXYRI(AbstractPotion basePotion, float x, float y) {
-            CustomLightData data = CustomLightPatches.customLights.get(basePotion.getClass());
-            if (data != null) {
-                float[] xyri = data.getXYRIData(basePotion);
-                float[] ret = new float[xyri.length*2];
-                for (int i = 0 ; i < xyri.length ; i++) {
-                    if (i % 4 == 0) {
-                        //X
-                        ret[i] = x;
-                        ret[i + xyri.length] = x + 64f * Settings.scale;
-                    } else if (i % 4 == 1) {
-                        //Y
-                        ret[i] = y;
-                        ret[i + xyri.length] = y;
-                    } else if (i % 4 == 2) {
-                        //R
-                        ret[i] = xyri[i] * 1.5f;
-                        ret[i + xyri.length] = xyri[i] * 1.5f;
-                    } else {
-                        //I
-                        ret[i] = xyri[i] * 1.25f;
-                        ret[i + xyri.length] = xyri[i] * 1.25f;
-                    }
-                }
-                return ret;
-            }
-            return new float[0];
-        }
-
-        public static Color[] wideColor(AbstractPotion basePotion) {
-            CustomLightData data = CustomLightPatches.customLights.get(basePotion.getClass());
-            if (data != null) {
-                Color[] color = data.getColorData(basePotion);
-                Color[] ret = new Color[color.length*2];
-                for (int i = 0 ; i < color.length ; i++) {
-                    ret[i] = color[i];
-                    ret[i + color.length] = color[i];
-                }
-                return ret;
-            }
-            return new Color[0];
         }
     }
 
@@ -304,45 +96,12 @@ public class RenderPatches {
         }
     }
 
-    @SpirePatch2(clz = SingleRelicViewPopup.class, method = "renderRelicImage")
-    public static class SRVLights {
-        @SpirePostfixPatch
-        public static void plz(SingleRelicViewPopup __instance, AbstractRelic ___relic) {
-            CustomLightData data = CustomLightPatches.customLights.get(___relic.getClass());
-            if (data != null) {
-                ShaderLogic.lightsToRender.add(new LightData(Settings.WIDTH/2f, Settings.HEIGHT/2f, data.getLightData(___relic).get(0).radius*2f, data.getLightData(___relic).get(0).intensity, data.getLightData(___relic).get(0).color));
-            }
-        }
-    }
-
     @SpirePatch2(clz = CampfireUI.class, method = "renderFire")
     public static class CampfireLights {
         @SpirePostfixPatch
         public static void getLights(CampfireUI __instance, ArrayList<AbstractGameEffect> ___flameEffect) {
             for (AbstractGameEffect e : ___flameEffect) {
                 CustomLightPatches.processCustomLights(e);
-            }
-        }
-    }
-
-    @SpirePatch2(clz = WhatMod.class, method = "renderModTooltip", paramtypez = {SpriteBatch.class, float.class, float.class, Class[].class})
-    public static class WhatModLights {
-        private static float particleTimer;
-        private static TextureAtlas.AtlasRegion img;
-        @SpirePostfixPatch
-        public static void lights(SpriteBatch sb, float x, float y) {
-            if (LightsOutMod.modEnabled) {
-                if (img == null) {
-                    img = ImageMaster.vfxAtlas.findRegion("env/torch");
-                }
-                x += 7f * Settings.scale;
-                sb.draw(img, x - (img.packedWidth / 2f), y - (img.packedHeight / 2f) - 24.0F * Settings.yScale, img.packedWidth / 2.0F, img.packedHeight / 2.0F, img.packedWidth, img.packedHeight, 1.0F, 1.0F, 0.0F);
-                particleTimer -= Gdx.graphics.getDeltaTime();
-                if (particleTimer < 0.0F) {
-                    particleTimer = 0.1F;
-                    LightsOutMod.managedEffects.add(new TorchParticleLEffect(x, y + 14.0F * Settings.scale));
-                    LightsOutMod.managedEffects.add(new LightFlareLEffect(x, y + 14.0F * Settings.scale));
-                }
             }
         }
     }
@@ -356,147 +115,4 @@ public class RenderPatches {
             }
         }
     }
-
-    @SpirePatch2(clz = Legend.class, method = "render")
-    public static class LegendLights {
-        private static float particleTimer;
-        private static TextureAtlas.AtlasRegion img;
-        @SpirePostfixPatch
-        public static void lights(SpriteBatch sb) {
-            if (LightsOutMod.modEnabled && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP) {
-                if (img == null) {
-                    img = ImageMaster.vfxAtlas.findRegion("env/torch");
-                }
-                float x = Legend.X + 150f * Settings.scale;
-                float y = Legend.Y;
-                sb.draw(img, x - (img.packedWidth / 2f), y - (img.packedHeight / 2f) - 24.0F * Settings.yScale, img.packedWidth / 2.0F, img.packedHeight / 2.0F, img.packedWidth, img.packedHeight, 1.0F, 1.0F, 0.0F);
-                particleTimer -= Gdx.graphics.getDeltaTime();
-                if (particleTimer < 0.0F) {
-                    particleTimer = 0.1F;
-                    LightsOutMod.managedEffects.add(new TorchParticleLEffect(x, y + 14.0F * Settings.scale));
-                    LightsOutMod.managedEffects.add(new LightFlareLEffect(x, y + 14.0F * Settings.scale));
-                }
-            }
-        }
-    }
-
-    @SpirePatch2(clz = MapRoomNode.class, method = "render")
-    public static class VisibleMapPlz {
-        private static final float SPACING_X = Settings.xScale * 64.0F * 2;
-        private static final float OFFSET_X = 560.0F * Settings.xScale;
-        private static final float OFFSET_Y = 180.0F * Settings.scale;
-        @SpirePostfixPatch
-        public static void lights(MapRoomNode __instance, SpriteBatch sb) {
-            if (LightsOutMod.modEnabled) {
-                Color c = Color.LIGHT_GRAY;
-                float rad = 50f*Settings.scale;
-                float i = 0.5f;
-                if (LightsOutMod.colorfulMap) {
-                    Texture t = __instance.room.getMapImg();
-                    if (t == ImageMaster.MAP_NODE_ENEMY) {
-                        c = Color.SCARLET;
-                    } else if (t == ImageMaster.MAP_NODE_ELITE) {
-                        c = Color.PURPLE;
-                        i += 0.2f;
-                        rad *= 1.2f;
-                    } else if (t == ImageMaster.MAP_NODE_EVENT) {
-                        c = Color.CYAN;
-                    } else if (t == ImageMaster.MAP_NODE_MERCHANT) {
-                        c = Color.GREEN;
-                    } else if (t == ImageMaster.MAP_NODE_TREASURE) {
-                        c = Color.GOLD;
-                    } else if (t == ImageMaster.MAP_NODE_REST) {
-                        c = Color.ORANGE;
-                    }
-                }
-                ShaderLogic.lightsToRender.add(new LightData(__instance.x * SPACING_X + OFFSET_X + __instance.offsetX, __instance.y * Settings.MAP_DST_Y + OFFSET_Y + DungeonMapScreen.offsetY + __instance.offsetY, rad, i, c));
-            }
-        }
-    }
-
-    @SpirePatch2(clz = DungeonMap.class, method = "renderBossIcon")
-    public static class GlowyBoss {
-        private static final float BOSS_OFFSET_Y = 1416.0F * Settings.scale;
-        private static final float BOSS_W = 512.0F * Settings.scale;
-        @SpirePostfixPatch
-        public static void lights(float ___mapOffsetY) {
-            if (LightsOutMod.modEnabled && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP) {
-                ShaderLogic.lightsToRender.add(new LightData(Settings.WIDTH/2f, DungeonMapScreen.offsetY + ___mapOffsetY + BOSS_OFFSET_Y + BOSS_W/2f, 256f*Settings.scale, 0.8f, Color.RED));
-            }
-        }
-    }
-
-    @SpirePatch2(clz = OptionsPanel.class, method = "render")
-    public static class VisibleOptions {
-        private static float particleTimer;
-        private static TextureAtlas.AtlasRegion img;
-        @SpirePostfixPatch
-        public static void lights(SpriteBatch sb) {
-            if (LightsOutMod.modEnabled) {
-                if (img == null) {
-                    img = ImageMaster.vfxAtlas.findRegion("env/torch");
-                }
-                float x = Settings.WIDTH/2f;
-                float y = Settings.HEIGHT/2f - 50f * Settings.scale;
-                sb.draw(img, x - (img.packedWidth / 2f), y - (img.packedHeight / 2f) - 24.0F * Settings.yScale, img.packedWidth / 2.0F, img.packedHeight / 2.0F, img.packedWidth, img.packedHeight, 1.0F, 1.0F, 0.0F);
-                particleTimer -= Gdx.graphics.getDeltaTime();
-                if (particleTimer < 0.0F) {
-                    particleTimer = 0.1F;
-                    LightsOutMod.managedEffects.add(new TorchParticleLEffect(x, y + 14.0F * Settings.scale));
-                    LightsOutMod.managedEffects.add(new LightFlareLEffect(x, y + 14.0F * Settings.scale));
-                }
-            }
-        }
-    }
-
-    // TODO not enough light slots, lol
-    /*@SpirePatch2(clz = MapDot.class, method = "render")
-    public static class VisibleDots {
-        private static final float OFFSET_Y = 172.0F * Settings.scale;
-        @SpirePostfixPatch
-        public static void lights(float ___x, float ___y) {
-            ShaderLogic.lightsToRender.add(new LightData(___x, ___y + DungeonMapScreen.offsetY + OFFSET_Y, 10f*Settings.scale, .4f, Color.GRAY));
-        }
-    }*/
-
-    // TODO use new energy orb render logic so it actually lines up
-    /*@SpirePatch2(clz = AbstractCard.class, method = "renderSmallEnergy")
-    public static class EnergyIconLight {
-        private static final Color IC = new Color(1.0F, 0.4F, 0.1F, 1.0F);
-        private static final Color DEFECT = Color.SKY;
-        private static final Color SILENT = Color.CHARTREUSE;
-        private static final Color WATCHER = Color.PURPLE;
-        @SpirePostfixPatch
-        public static void plz(AbstractCard __instance, TextureAtlas.AtlasRegion region, float x, float y) {
-            Color c = Color.WHITE;
-            switch (__instance.color) {
-                case RED:
-                    c = IC;
-                    break;
-                case GREEN:
-                    c = SILENT;
-                    break;
-                case BLUE:
-                    c = DEFECT;
-                    break;
-                case PURPLE:
-                    c = WATCHER;
-                    break;
-                case COLORLESS:
-                case CURSE:
-                    break;
-                default:
-                    for (AbstractPlayer p : BaseMod.getModdedCharacters()) {
-                        if (p.getCardColor().equals(__instance.color)) {
-                            c = p.getCardTrailColor();
-                            break;
-                        }
-                    }
-            }
-            ShaderLogic.lightsToRender.add(new LightData(
-                    __instance.current_x + x * Settings.scale * __instance.drawScale + region.offsetX * Settings.scale + region.getRegionWidth()/2f * Settings.scale,
-                    __instance.current_y + y * Settings.scale * __instance.drawScale + region.offsetY * Settings.scale + region.getRegionHeight()/2f * Settings.scale,
-                    10f, 1f, c));
-        }
-    }*/
 }
