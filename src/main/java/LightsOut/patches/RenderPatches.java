@@ -41,6 +41,7 @@ import com.megacrit.cardcrawl.screens.DungeonMapScreen;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
+import com.megacrit.cardcrawl.screens.options.OptionsPanel;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.FlameAnimationEffect;
 import com.megacrit.cardcrawl.vfx.combat.FlashAtkImgEffect;
@@ -96,6 +97,7 @@ public class RenderPatches {
         private static boolean shouldRenderFire() {
             return !CardCrawlGame.isInARun() &&
                     CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.DOOR_UNLOCK &&
+                    CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.SETTINGS &&
                     (CardCrawlGame.mainMenuScreen.screen != MainMenuScreen.CurScreen.CHAR_SELECT || CardCrawlGame.mainMenuScreen.charSelectScreen.options.stream().noneMatch(o -> o.selected)) &&
                     !BaseMod.modSettingsUp;
         }
@@ -420,6 +422,29 @@ public class RenderPatches {
         public static void lights(float ___mapOffsetY) {
             if (LightsOutMod.modEnabled && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.MAP) {
                 ShaderLogic.lightsToRender.add(new LightData(Settings.WIDTH/2f, DungeonMapScreen.offsetY + ___mapOffsetY + BOSS_OFFSET_Y + BOSS_W/2f, 256f*Settings.scale, 0.8f, Color.RED));
+            }
+        }
+    }
+
+    @SpirePatch2(clz = OptionsPanel.class, method = "render")
+    public static class VisibleOptions {
+        private static float particleTimer;
+        private static TextureAtlas.AtlasRegion img;
+        @SpirePostfixPatch
+        public static void lights(SpriteBatch sb) {
+            if (LightsOutMod.modEnabled) {
+                if (img == null) {
+                    img = ImageMaster.vfxAtlas.findRegion("env/torch");
+                }
+                float x = Settings.WIDTH/2f;
+                float y = Settings.HEIGHT/2f - 50f * Settings.scale;
+                sb.draw(img, x - (img.packedWidth / 2f), y - (img.packedHeight / 2f) - 24.0F * Settings.yScale, img.packedWidth / 2.0F, img.packedHeight / 2.0F, img.packedWidth, img.packedHeight, 1.0F, 1.0F, 0.0F);
+                particleTimer -= Gdx.graphics.getDeltaTime();
+                if (particleTimer < 0.0F) {
+                    particleTimer = 0.1F;
+                    LightsOutMod.managedEffects.add(new TorchParticleLEffect(x, y + 14.0F * Settings.scale));
+                    LightsOutMod.managedEffects.add(new LightFlareLEffect(x, y + 14.0F * Settings.scale));
+                }
             }
         }
     }
