@@ -57,6 +57,10 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
 
     public static int ambientLight = 0;
 
+    public static final String COLORFUL_MAP = "colorfulMap";
+
+    public static boolean colorfulMap = true;
+
     public static UIStrings uiStrings;
 
     public static String[] TEXT;
@@ -85,6 +89,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         LODefaultSettings.setProperty(MOUSE_RADIUS, String.valueOf(mouseRadius));
         LODefaultSettings.setProperty(TORCH_MODE_DECAY, String.valueOf(torchModeDecay));
         LODefaultSettings.setProperty(AMBIENT_LIGHT, String.valueOf(ambientLight));
+        LODefaultSettings.setProperty(COLORFUL_MAP, Boolean.toString(colorfulMap));
         try {
             LOConfig = new SpireConfig(modID, FILE_NAME, LODefaultSettings);
             modEnabled = LOConfig.getBool(ENABLE_MOD);
@@ -92,6 +97,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
             mouseRadius = LOConfig.getInt(MOUSE_RADIUS);
             torchModeDecay = LOConfig.getInt(TORCH_MODE_DECAY);
             ambientLight = LOConfig.getInt(AMBIENT_LIGHT);
+            colorfulMap = LOConfig.getBool(COLORFUL_MAP);
         } catch (IOException e) {
             logger.error("Lights Out SpireConfig initialization failed:");
             e.printStackTrace();
@@ -138,6 +144,18 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
             }
         });
         currentYposition -= spacingY;
+
+        ModLabeledToggleButton colorfulButton = new ModLabeledToggleButton(TEXT[5], 360.0F, currentYposition - 10.0F, Settings.CREAM_COLOR, FontHelper.charDescFont, LOConfig.getBool(COLORFUL_MAP), settingsPanel, label -> {},button -> {
+            LOConfig.setBool(COLORFUL_MAP, button.enabled);
+            colorfulMap = button.enabled;
+            try {
+                LOConfig.save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        currentYposition -= spacingY;
+
 
         ModLabeledToggleButton torchModeButton = new ModLabeledToggleButton(TEXT[1], 360.0F, currentYposition - 10.0F, Settings.CREAM_COLOR, FontHelper.charDescFont, LOConfig.getBool(TORCH_MODE), settingsPanel, label -> {},button -> {
             LOConfig.setBool(TORCH_MODE, button.enabled);
@@ -187,6 +205,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         currentYposition -= spacingY;
 
         settingsPanel.addUIElement(enableModsButton);
+        settingsPanel.addUIElement(colorfulButton);
         settingsPanel.addUIElement(torchModeButton);
         settingsPanel.addUIElement(radLabel);
         settingsPanel.addUIElement(radSlider);

@@ -219,6 +219,7 @@ public class PatchFactory {
             addSimpleVFX(LightBulbEffect.class, 200f, 1.0f);
 
             addSimpleVFX(GlowRelicParticle.class, 50f, 0.05f);
+            addCustom(FlameAnimationEffect.class, "nodeHb.cX, nodeHb.cY, 75f"+SCALE+", 0.25f", Color.SCARLET);
 
             addSimpleVFX(UpgradeShineParticleEffect.class, 50f, 0.5f);
             addSimpleVFX(BossChestShineEffect.class, 50f, 0.5f);
