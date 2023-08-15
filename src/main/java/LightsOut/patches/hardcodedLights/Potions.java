@@ -20,8 +20,8 @@ public class Potions {
         @SpireRawPatch
         public static void patch(CtBehavior ctBehavior) throws CannotCompileException {
             CtClass ctClass = ctBehavior.getDeclaringClass();
-            ctClass.addMethod(CtNewMethod.make("public float[] _lightsOutGetXYRI() {return LightsOut.patches.RenderPatches.WidePotionTest.wideXYRI(potion, posX, posY);}", ctClass));
-            ctClass.addMethod(CtNewMethod.make("public com.badlogic.gdx.graphics.Color[] _lightsOutGetColor() {return LightsOut.patches.RenderPatches.WidePotionTest.wideColor(potion);}", ctClass));
+            ctClass.addMethod(CtNewMethod.make("public float[] _lightsOutGetXYRI() {return LightsOut.patches.hardcodedLights.Potions.WidePotionTest.wideXYRI(potion, posX, posY);}", ctClass));
+            ctClass.addMethod(CtNewMethod.make("public com.badlogic.gdx.graphics.Color[] _lightsOutGetColor() {return LightsOut.patches.hardcodedLights.Potions.WidePotionTest.wideColor(potion);}", ctClass));
         }
 
         public static float[] wideXYRI(AbstractPotion basePotion, float x, float y) {
