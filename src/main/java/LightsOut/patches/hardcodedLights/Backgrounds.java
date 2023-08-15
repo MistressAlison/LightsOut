@@ -1,12 +1,14 @@
 package LightsOut.patches.hardcodedLights;
 
 import LightsOut.patches.CustomLightPatches;
+import LightsOut.util.ColorUtil;
 import LightsOut.util.LightData;
 import LightsOut.util.ShaderLogic;
 import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.rooms.RestRoom;
 import com.megacrit.cardcrawl.scenes.TheCityScene;
 import com.megacrit.cardcrawl.vfx.scene.FireFlyEffect;
 
@@ -44,6 +46,15 @@ public class Backgrounds {
                     ShaderLogic.lightsToRender.add(new LightData(199.0F * Settings.xScale, 421.0F * Settings.yScale, 400.0F, ___whiteColor.a, MG_COLOR));
                 }
             }
+        }
+    }
+
+    @SpirePatch2(clz = RestRoom.class, method = "render")
+    public static class CampfireGlow {
+        private static final Color COLOR = ColorUtil.mix(ColorUtil.RED, ColorUtil.ORANGE);
+        @SpirePostfixPatch
+        public static void plz(RestRoom __instance) {
+            ShaderLogic.lightsToRender.add(new LightData(1468*Settings.xScale, 322*Settings.yScale, 400f, 0.7F, COLOR));
         }
     }
 }
