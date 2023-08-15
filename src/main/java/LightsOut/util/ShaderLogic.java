@@ -30,8 +30,12 @@ public class ShaderLogic implements ScreenPostProcessor {
         sb.setColor(Color.WHITE);
         sb.setBlendFunction(1, 0);
         if (LightsOutMod.modEnabled) {
+            float divisor = 1;
             if (LightsOutMod.ambientLight > 0) {
-                lightsToRender.add(new LightData(Settings.WIDTH/2f, Settings.HEIGHT/2f, Settings.WIDTH*2, LightsOutMod.ambientLight/100f, Color.WHITE));
+                if (LightsOutMod.ambientLight >= 10) {
+                    divisor = (float) Math.log10(LightsOutMod.ambientLight);
+                }
+                lightsToRender.add(0, new LightData(Settings.WIDTH/2f, Settings.HEIGHT/2f, Settings.WIDTH*2, (LightsOutMod.ambientLight/100f)*divisor, Color.WHITE));
             }
             ShaderProgram back = sb.getShader();
             sb.setShader(sp);
@@ -42,7 +46,7 @@ public class ShaderLogic implements ScreenPostProcessor {
                 xyri[4 * i] = lightsToRender.get(i).x;
                 xyri[4 * i + 1] = lightsToRender.get(i).y;
                 xyri[4 * i + 2] = lightsToRender.get(i).radius;
-                xyri[4 * i + 3] = lightsToRender.get(i).intensity;
+                xyri[4 * i + 3] = lightsToRender.get(i).intensity / divisor;
                 rgba[4 * i] = lightsToRender.get(i).color.r;
                 rgba[4 * i + 1] = lightsToRender.get(i).color.g;
                 rgba[4 * i + 2] = lightsToRender.get(i).color.b;
