@@ -5,6 +5,8 @@ import LightsOut.LightsOutMod;
 import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.red.SeeingRed;
 import com.megacrit.cardcrawl.characters.Defect;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -15,7 +17,9 @@ import com.megacrit.cardcrawl.monsters.beyond.WrithingMass;
 import com.megacrit.cardcrawl.monsters.exordium.Sentry;
 import com.megacrit.cardcrawl.orbs.*;
 import com.megacrit.cardcrawl.potions.*;
-import com.megacrit.cardcrawl.powers.*;
+import com.megacrit.cardcrawl.powers.DemonFormPower;
+import com.megacrit.cardcrawl.powers.EchoPower;
+import com.megacrit.cardcrawl.powers.WraithFormPower;
 import com.megacrit.cardcrawl.powers.watcher.DevaPower;
 import com.megacrit.cardcrawl.relics.*;
 import com.megacrit.cardcrawl.vfx.*;
@@ -84,6 +88,26 @@ public class PatchFactory {
         return sb.toString();
     }
 
+    public static String cardToXYRI(float dx, float dy, float r, float i) {
+        float dist = (float) Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+        float atan = (float) Math.toDegrees(Math.atan(dx/dy));
+        return "current_x + "+dist+SCALE+"*drawScale * com.badlogic.gdx.math.MathUtils.sinDeg((float)("+atan+" - angle)), current_y + "+dist+SCALE+"*drawScale * com.badlogic.gdx.math.MathUtils.cosDeg((float)("+atan+" - angle)),"+r+SCALE+"*drawScale, "+i;
+    }
+
+    public static String cardsToXYRI(float[] dx, float[] dy, float[] r, float[] i) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (int index = 0 ; index < dx.length ; index++) {
+            if (!first) {
+                sb.append(", ");
+            } else {
+                first = false;
+            }
+            sb.append(cardToXYRI(dx[index], dy[index], r[index], i[index]));
+        }
+        return sb.toString();
+    }
+
     public static void addPotion(Class<? extends AbstractPotion> clazz, float r, float i) {
         PATCHES.add(new PatchData(clazz, "posX, posY, "+r+SCALE+", "+i, "liquidColor"));
     }
@@ -112,8 +136,12 @@ public class PatchFactory {
         PATCHES.add(new PatchData(clazz, "x, y, "+r+SCALE+", "+i, colorToString(c)));
     }
 
-    public static void addCard() {
+    public static void addCard(Class<? extends AbstractCard> clazz, float dx, float dy, float r, float i, Color c) {
+        PATCHES.add(new PatchData(clazz, cardToXYRI(dx, dy, r, i), colorToString(c)));
+    }
 
+    public static void addCard(Class<? extends AbstractCard> clazz, float[] dx, float[] dy, float[] r, float[] i, Color... c) {
+        PATCHES.add(new PatchData(clazz, cardsToXYRI(dx, dy, r, i), colorToString(c)));
     }
 
     public static void addCustom(Class<?> clazz, String xyri, Color... colors) {
@@ -165,6 +193,7 @@ public class PatchFactory {
             addSimpleVFX(DarkOrbActivateParticle.class, 100f, 0.1f);
 
             //Cards
+            addCard(SeeingRed.class, new float[]{-50f, 50f}, new float[]{80f, 80f}, new float[]{100f, 100f}, new float[]{0.5f, 0.5f}, Color.RED, Color.RED);
 
             //Powers
             addCustom(DemonFormPower.class, "owner.hb.cX, owner.hb.cY, (100f+10*amount)"+SCALE+",0.5f+0.05*amount", Color.RED);
