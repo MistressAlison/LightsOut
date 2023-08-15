@@ -10,6 +10,9 @@ import com.megacrit.cardcrawl.cards.red.SeeingRed;
 import com.megacrit.cardcrawl.characters.Defect;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.events.AbstractEvent;
+import com.megacrit.cardcrawl.events.exordium.Cleric;
+import com.megacrit.cardcrawl.events.exordium.ScrapOoze;
 import com.megacrit.cardcrawl.monsters.beyond.Exploder;
 import com.megacrit.cardcrawl.monsters.beyond.OrbWalker;
 import com.megacrit.cardcrawl.monsters.beyond.SnakeDagger;
@@ -34,6 +37,8 @@ import com.megacrit.cardcrawl.vfx.stance.WrathParticleEffect;
 import javassist.*;
 
 import java.util.ArrayList;
+
+import static LightsOut.util.ColorUtil.*;
 
 public class PatchFactory {
     public static final ArrayList<PatchData> PATCHES = new ArrayList<>();
@@ -111,6 +116,24 @@ public class PatchFactory {
         return sb.toString();
     }
 
+    public static String eventToXYTI(float x, float y, float r, float i) {
+        return x+SCALE+", "+y+SCALE+", "+r+SCALE+", "+i;
+    }
+
+    public static String eventsToXYRI(float[] dx, float[] dy, float[] r, float[] i) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (int index = 0 ; index < dx.length ; index++) {
+            if (!first) {
+                sb.append(", ");
+            } else {
+                first = false;
+            }
+            sb.append(eventToXYTI(dx[index], dy[index], r[index], i[index]));
+        }
+        return sb.toString();
+    }
+
     public static void addPotion(Class<? extends AbstractPotion> clazz, float r, float i) {
         PATCHES.add(new PatchData(clazz, "posX, posY, "+r+SCALE+", "+i, "liquidColor"));
     }
@@ -145,6 +168,14 @@ public class PatchFactory {
 
     public static void addCard(Class<? extends AbstractCard> clazz, float[] dx, float[] dy, float[] r, float[] i, Color... c) {
         PATCHES.add(new PatchData(clazz, cardsToXYRI(dx, dy, r, i), colorToString(c)));
+    }
+
+    public static void addEvent(Class<? extends AbstractEvent> clazz, float x, float y, float r, float i, Color c) {
+        PATCHES.add(new PatchData(clazz, eventToXYTI(x, y, r, i), colorToString(c)));
+    }
+
+    public static void addEvent(Class<? extends AbstractEvent> clazz, float[] x, float[] y, float[] r, float[] i, Color... c) {
+        PATCHES.add(new PatchData(clazz, eventsToXYRI(x, y, r, i), colorToString(c)));
     }
 
     public static void addCustom(Class<?> clazz, String xyri, Color... colors) {
@@ -215,6 +246,10 @@ public class PatchFactory {
             addEntity(Sentry.class, "jewel", 50f, 0.5f, new Color(0.2f, 0.7f, 1.0f, 1.0f));
             addEntity(WrithingMass.class, "Eye", 50f, 0.7f, new Color(1.0f, 0.2f, 0.2f, 1.0f));
 
+            //Events
+            addEvent(Cleric.class, new float[]{656f, 250f}, new float[]{320f, 323f}, new float[]{250f, 250f}, new float[]{0.8f, 0.8f}, Color.CYAN, mix(CHARTREUSE, YELLOW));
+            addEvent(ScrapOoze.class, new float[]{288f, 684f}, new float[]{308f, 564f}, new float[]{250f, 25f}, new float[]{1.2f, 1.2f}, ORANGE, WHITE);
+
             //Effects
             addSimpleVFX(FastSmokeParticle.class, 300f, 2f);
             addSimpleVFX(LightningEffect.class, 2000f, 2f);
@@ -252,16 +287,20 @@ public class PatchFactory {
 
             addSimpleVFX(MiracleEffect.class, 200f, 1.0f);
             addSimpleVFX(LightBulbEffect.class, 200f, 1.0f);
+            addSimpleVFX(VerticalImpactEffect.class, 200f, 1.0f);
+            addCustom(AnimatedSlashEffect.class, "x - 32"+SCALE+", y, 200f"+SCALE+", 0.8f, x + 32"+SCALE+", y, 200f"+SCALE+", 0.8f", "color, color2");
 
             addSimpleVFX(GlowRelicParticle.class, 50f, 0.05f);
             addCustom(FlameAnimationEffect.class, "nodeHb.cX, nodeHb.cY, 75f"+SCALE+", 0.25f", Color.SCARLET);
 
             addSimpleVFX(UpgradeShineParticleEffect.class, 50f, 0.5f);
             addSimpleVFX(BossChestShineEffect.class, 50f, 0.5f);
-            addCustom(FireFlyEffect.class, "x, y, 120f"+SCALE+"*color.a, 0.5f", "color");
+            addCustom(FireFlyEffect.class, "x, y, 120f"+SCALE+"*color.a, 0.5f, x, y, 500f"+SCALE+"*color.a, 0.1f", "color, color");
             addSimpleVFX(ShinySparkleEffect.class, 50f, 0.5f);
             addSimpleVFX(ShineSparkleEffect.class, 50f, 0.5f);
             addSimpleVFX(ImpactSparkEffect.class, 50f, 0.5f);
+            addSimpleVFX(DamageImpactLineEffect.class, 50f, 0.1f);
+            addSimpleVFX(BlockImpactLineEffect.class, 50f, 0.1f);
 
             addCustom(UncommonPotionParticleEffect.class, "oX + (hb == null ? x : hb.cX) + img.packedWidth / 2.0F, oY + (hb == null ? y : hb.cY) + img.packedHeight / 2.0F, 40f"+SCALE+",0.25f", "color");
             addCustom(RarePotionParticleEffect.class, "oX + (hb == null ? x : hb.cX) + img.packedWidth / 2.0F, oY + (hb == null ? y : hb.cY) + img.packedHeight / 2.0F, 40f"+SCALE+",0.25f", "color");
