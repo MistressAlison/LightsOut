@@ -16,6 +16,7 @@ import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.CampfireUI;
+import com.megacrit.cardcrawl.rooms.EventRoom;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.FlameAnimationEffect;
@@ -112,6 +113,16 @@ public class RenderPatches {
         public static void lights(ArrayList<FlameAnimationEffect> ___fEffects) {
             for (FlameAnimationEffect e : ___fEffects) {
                 CustomLightPatches.processCustomLights(e);
+            }
+        }
+    }
+
+    @SpirePatch2(clz = EventRoom.class, method = "render")
+    public static class EventLights {
+        @SpirePostfixPatch
+        public static void lights(EventRoom __instance) {
+            if (__instance.event != null && __instance.event.waitTimer == 0f && AbstractDungeon.screen == AbstractDungeon.CurrentScreen.NONE) {
+                CustomLightPatches.processCustomLights(__instance.event);
             }
         }
     }

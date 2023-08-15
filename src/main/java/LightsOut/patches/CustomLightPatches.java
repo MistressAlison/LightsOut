@@ -8,6 +8,7 @@ import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.events.AbstractEvent;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
@@ -70,7 +71,8 @@ public class CustomLightPatches {
                         new SubclassClassFilter(AbstractRelic.class),
                         new SubclassClassFilter(AbstractPotion.class),
                         new SubclassClassFilter(AbstractCard.class),
-                        new SubclassClassFilter(AbstractPower.class)
+                        new SubclassClassFilter(AbstractPower.class),
+                        new SubclassClassFilter(AbstractEvent.class)
                 ));
 
         ArrayList<ClassInfo> foundClasses = new ArrayList<>();
