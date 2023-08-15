@@ -6,7 +6,8 @@
       "Light Radius (default 360)",
       "Lantern Mode Decay (default 5)",
       "Ambient Light (default 0)",
-      "Colorful Map"
+      "Map Glow Colorful",
+      "Glowing Map"
     ]
   },
   "LightsOut:InvincibleText": {
