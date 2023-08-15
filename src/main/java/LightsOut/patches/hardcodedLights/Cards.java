@@ -1,6 +1,32 @@
 package LightsOut.patches.hardcodedLights;
 
+import LightsOut.patches.CustomLightPatches;
+import LightsOut.util.CustomLightData;
+import LightsOut.util.LightData;
+import LightsOut.util.ShaderLogic;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+
 public class Cards {
+    @SpirePatch2(clz = SingleCardViewPopup.class, method = "render")
+    public static class SRVLights {
+        @SpirePostfixPatch
+        public static void plz(SingleCardViewPopup __instance, AbstractCard ___card) {
+            CustomLightData data = CustomLightPatches.customLights.get(___card.getClass());
+            if (data != null) {
+                ___card.current_x = Settings.WIDTH/2f;
+                ___card.current_y = Settings.HEIGHT/2f;
+                ___card.drawScale *=2f;
+                for (LightData ld : data.getLightData(___card)) {
+                    ShaderLogic.lightsToRender.add(new LightData(ld.x, ld.y, ld.radius, ld.intensity, ld.color));
+                }
+                ___card.drawScale/=2f;
+            }
+        }
+    }
 
     // TODO use new energy orb render logic so it actually lines up
     /*@SpirePatch2(clz = AbstractCard.class, method = "renderSmallEnergy")
