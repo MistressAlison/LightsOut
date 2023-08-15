@@ -11,8 +11,13 @@ import com.megacrit.cardcrawl.characters.Defect;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.events.AbstractEvent;
-import com.megacrit.cardcrawl.events.exordium.Cleric;
-import com.megacrit.cardcrawl.events.exordium.ScrapOoze;
+import com.megacrit.cardcrawl.events.beyond.MindBloom;
+import com.megacrit.cardcrawl.events.beyond.MoaiHead;
+import com.megacrit.cardcrawl.events.beyond.SecretPortal;
+import com.megacrit.cardcrawl.events.beyond.TombRedMask;
+import com.megacrit.cardcrawl.events.city.*;
+import com.megacrit.cardcrawl.events.exordium.*;
+import com.megacrit.cardcrawl.events.shrines.*;
 import com.megacrit.cardcrawl.monsters.beyond.Exploder;
 import com.megacrit.cardcrawl.monsters.beyond.OrbWalker;
 import com.megacrit.cardcrawl.monsters.beyond.SnakeDagger;
@@ -268,8 +273,40 @@ public class PatchFactory {
             addEntity(WrithingMass.class, "Eye", 50f, 0.7f, new Color(1.0f, 0.2f, 0.2f, 1.0f));
 
             //Events
-            addEvent(Cleric.class, new float[]{656f, 250f}, new float[]{320f, 323f}, new float[]{250f, 250f}, new float[]{0.8f, 0.8f}, Color.CYAN, mix(CHARTREUSE, YELLOW));
-            addEvent(ScrapOoze.class, new float[]{288f, 684f}, new float[]{308f, 564f}, new float[]{250f, 25f}, new float[]{1.2f, 1.2f}, ORANGE, WHITE);
+            addEvent(AccursedBlacksmith.class, new float[]{207, 297, 250, 1.2f,   527, 443, 100, 0.3f}, Color.ORANGE, CHARTREUSE);
+            addEvent(BackToBasics.class, 402, 444, 200, 1, mix(ORANGE, RED));
+            addEvent(Beggar.class, new float[]{632, 661, 50f, 0.4f,   674, 434, 40f, 0.4f,   712, 610, 100f, 0.4f}, ORANGE, ORANGE, ORANGE);
+            addEvent(Bonfire.class, new float[]{437, 252, 250, 1.2f,   285, 542, 50, 0.9f,   404, 576, 20, 0.8f,   575, 616, 50, 0.8f,   696, 441, 50, 0.9f}, mix(YELLOW, Color.ORANGE), Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE);
+            addEvent(Colosseum.class, 476, 706, 250, 1.f, pastel(YELLOW));
+            addEvent(Cleric.class, new float[]{656, 320, 250, 0.8f,   250, 323, 250, 0.8f}, CYAN, mix(CHARTREUSE, Color.YELLOW));
+            addEvent(CursedTome.class, 528, 503, 150, 1.0f, Color.PINK);
+            addEvent(DrugDealer.class, 411, 462, 50f, 1.3f, CYAN);
+            addEvent(Duplicator.class, 437, 604, 150, 0.8f, CYAN);
+            addEvent(FaceTrader.class, new float[]{457, 664, 50, 0.7f,   363, 529, 50, 0.7f,   544, 519, 50, 0.7f}, Color.PURPLE, Color.PURPLE, Color.PURPLE);
+            addEvent(ForgottenAltar.class, 475, 511, 250f, 0.7f, Color.PURPLE);
+            addEvent(FountainOfCurseRemoval.class, new float[]{452, 546, 50, 1f,   454, 281, 150, 1.2f}, CYAN, CYAN);
+            addEvent(Ghosts.class, 440, 374, 250, 1.2f, mix(ORANGE, Color.YELLOW));
+            addEvent(GoldenIdolEvent.class, 468, 615, 250, 1.5f, Color.GOLD);
+            addEvent(GoldShrine.class, 458, 527, 200, 0.3f, Color.GOLD);
+            addEvent(GoldenWing.class, new float[]{507, 478, 100f, 0.4f,   606, 211, 20f, 1.0f,   548, 307, 30f, 1.2f}, Color.GOLD, pastel(Color.GOLD), pastel(Color.GOLD));
+            addEvent(KnowingSkull.class, 475, 542, 250, 1.5f, CHARTREUSE);
+            addEvent(LivingWall.class, new float[]{705, 345, 50, 1.2f,   550, 564, 100, 1.2f,   432, 555, 100, 1.2f,   222, 466, 100, 1.2f,   276, 438, 50, 1.2f}, Color.GOLD, Color.GOLD, Color.GOLD, Color.GOLD, Color.GOLD);
+            addEvent(MindBloom.class, 459, 389, 500, 1.4f, mix(Color.RED, Color.ORANGE));
+            addEvent(Nest.class, 442, 489, 300f, 1.4f, pastel(YELLOW));
+            addEvent(PurificationShrine.class, 444, 575, 150, 0.7f, ORANGE);
+            addEvent(ScrapOoze.class, new float[]{288, 308, 250, 1.2f,   684, 564, 25, 1.2f}, ORANGE, WHITE);
+            addEvent(SecretPortal.class, new float[]{416, 486, 400f, 0.6f,   416, 486, 150f, 1.0f}, CYAN, ORANGE);
+            addEvent(ShiningLight.class, 580, 614, 600, 1.2f, mix(WHITE, pastel(YELLOW)));
+            //addEvent(TheJoust.class, 716, 583, 100, 0.3f, Color.GRAY);
+            addEvent(TheLibrary.class, 641, 710, 200, 1.0f, mix(WHITE, CYAN));
+            addEvent(TheMausoleum.class, 447, 576, 300, 1.2f, ORANGE);
+            addEvent(MoaiHead.class, new float[]{465, 274, 250, 1.2f,   541, 678, 30f, 1.2f,   413, 674, 15f, 1.2f}, ORANGE, YELLOW, YELLOW);
+            addEvent(TombRedMask.class, 359, 477, 200, 1.2f, YELLOW);
+            addEvent(Transmogrifier.class, 465, 576, 150, 0.7f, Color.PURPLE);
+            addEvent(UpgradeShrine.class, new float[]{398, 597, 100, 1.2f,   517, 677, 100, 1.2f,   547, 579, 100, 1.2f}, ORANGE, ORANGE, ORANGE);
+            addEvent(Vampires.class, 321, 568, 150, 0.4f, Color.RED);
+            addEvent(WeMeetAgain.class, new float[]{498, 564, 25, 1.2f,   431, 566, 25, 1.2f}, YELLOW, YELLOW);
+            addEvent(GoopPuddle.class, new float[]{605, 198, 200f, 0.6f,   329, 470, 150f, 0.5f,   682, 565, 100f, 0.4f,   517, 673, 50f, 0.4f}, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE);
 
             //Effects
             addSimpleVFX(FastSmokeParticle.class, 300f, 2f);
