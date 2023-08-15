@@ -19,6 +19,7 @@ import com.megacrit.cardcrawl.vfx.scene.TorchParticleLEffect;
 import javassist.CtBehavior;
 
 public class Relics {
+    // TODO make work with multiple lights
     @SpirePatch2(clz = SingleRelicViewPopup.class, method = "renderRelicImage")
     public static class SRVLights {
         @SpirePostfixPatch
