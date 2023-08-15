@@ -27,7 +27,10 @@ import com.megacrit.cardcrawl.vfx.campfire.CampfireBurningEffect;
 import com.megacrit.cardcrawl.vfx.campfire.CampfireEndingBurningEffect;
 import com.megacrit.cardcrawl.vfx.combat.*;
 import com.megacrit.cardcrawl.vfx.scene.*;
+import com.megacrit.cardcrawl.vfx.stance.CalmParticleEffect;
+import com.megacrit.cardcrawl.vfx.stance.DivinityParticleEffect;
 import com.megacrit.cardcrawl.vfx.stance.StanceAuraEffect;
+import com.megacrit.cardcrawl.vfx.stance.WrathParticleEffect;
 import javassist.*;
 
 import java.util.ArrayList;
@@ -222,6 +225,9 @@ public class PatchFactory {
             addSimpleVFX(GhostlyWeakFireEffect.class, 400f, 0.03f);
 
             addSimpleVFX(StanceAuraEffect.class, 300f, 0.1f);
+            addCustom(WrathParticleEffect.class, "x, y+vY, 50f"+SCALE+", 0.1f", "color");
+            addSimpleVFX(CalmParticleEffect.class, 50f, 0.1f);
+            addCustom(DivinityParticleEffect.class, "x, y+vY, 50f"+SCALE+", 0.1f", "color");
 
             addSimpleVFX(TorchParticleSEffect.class, 200f, 0.1f);
             addSimpleVFX(TorchParticleMEffect.class, 200f, 0.1f);
@@ -252,7 +258,7 @@ public class PatchFactory {
 
             addSimpleVFX(UpgradeShineParticleEffect.class, 50f, 0.5f);
             addSimpleVFX(BossChestShineEffect.class, 50f, 0.5f);
-            addSimpleVFX(FireFlyEffect.class, 50f, 0.5f);
+            addCustom(FireFlyEffect.class, "x, y, 120f"+SCALE+"*color.a, 0.5f", "color");
             addSimpleVFX(ShinySparkleEffect.class, 50f, 0.5f);
             addSimpleVFX(ShineSparkleEffect.class, 50f, 0.5f);
             addSimpleVFX(ImpactSparkEffect.class, 50f, 0.5f);

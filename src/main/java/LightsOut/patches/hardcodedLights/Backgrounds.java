@@ -1,5 +1,6 @@
 package LightsOut.patches.hardcodedLights;
 
+import LightsOut.patches.CustomLightPatches;
 import LightsOut.util.LightData;
 import LightsOut.util.ShaderLogic;
 import com.badlogic.gdx.graphics.Color;
@@ -7,6 +8,9 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.scenes.TheCityScene;
+import com.megacrit.cardcrawl.vfx.scene.FireFlyEffect;
+
+import java.util.ArrayList;
 
 public class Backgrounds {
     @SpirePatch2(clz = TheCityScene.class, method = "renderCombatRoomFg")
@@ -14,11 +18,15 @@ public class Backgrounds {
         private static final Color FG2_COLOR = new Color(1.0F, 0.8F, 0.2F, 1.0F);
 
         @SpirePostfixPatch
-        public static void plz(TheCityScene __instance, boolean ___renderFg2) {
+        public static void plz(TheCityScene __instance, boolean ___renderFg2, ArrayList<FireFlyEffect> ___fireFlies, boolean ___hasFlies, boolean ___isCamp) {
             if (!___renderFg2) {
                 ShaderLogic.lightsToRender.add(new LightData(1848.0F * Settings.xScale, 314.0F * Settings.yScale, 250.0F, 1.0F, FG2_COLOR));
             }
-
+            if (___hasFlies && !___isCamp) {
+                for (FireFlyEffect e : ___fireFlies) {
+                    CustomLightPatches.processCustomLights(e);
+                }
+            }
         }
     }
 
