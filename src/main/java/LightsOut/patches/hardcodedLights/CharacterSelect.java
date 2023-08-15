@@ -1,16 +1,21 @@
 package LightsOut.patches.hardcodedLights;
 
 import LightsOut.patches.CustomLightPatches;
+import LightsOut.util.CustomLightData;
 import LightsOut.util.LightData;
 import LightsOut.util.ShaderLogic;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import com.megacrit.cardcrawl.screens.charSelect.CharacterOption;
+import javassist.CtBehavior;
 
 public class CharacterSelect {
     @SpirePatch2(clz = CharacterOption.class, method = "render")
@@ -54,6 +59,42 @@ public class CharacterSelect {
                 } else {
                     CustomLightPatches.processCustomCharacterSelectLights(__instance.c);
                 }
+            }
+        }
+    }
+
+    @SpirePatch2(clz = CharacterOption.class, method = "renderRelics")
+    public static class RelicLights {
+        public static void processLights(AbstractRelic r, float x, float y) {
+            CustomLightData data = CustomLightPatches.customLights.get(r.getClass());
+            if (data != null) {
+                r.currentX = x;
+                r.currentY = y;
+                for (LightData ld : data.getLightData(r)) {
+                    ShaderLogic.lightsToRender.add(new LightData(ld.x, ld.y, ld.radius, ld.intensity, ld.color));
+                }
+            }
+        }
+        @SpirePostfixPatch
+        public static void lightsSingle(CharacterOption __instance, CharSelectInfo ___charInfo, float ___infoX, float ___infoY) {
+            if (___charInfo.relics.size() == 1) {
+                AbstractRelic r = RelicLibrary.getRelic(___charInfo.relics.get(0));
+                if (r != null) {
+                    processLights(r, ___infoX, ___infoY);
+                }
+            }
+        }
+
+        @SpireInsertPatch(locator = MultiLocator.class, localvars = {"r", "i"})
+        public static void lightsMulti(CharacterOption __instance, CharSelectInfo ___charInfo, float ___infoX, float ___infoY, AbstractRelic r, int i) {
+            processLights(r, ___infoX + i * 72.0F * Settings.scale * (0.01F + (1.0F - 0.019F * ___charInfo.relics.size())), ___infoY);
+        }
+
+        public static class MultiLocator extends SpireInsertLocator {
+            @Override
+            public int[] Locate(CtBehavior ctBehavior) throws Exception {
+                Matcher m = new Matcher.MethodCallMatcher(Hitbox.class, "update");
+                return LineFinder.findInOrder(ctBehavior, m);
             }
         }
     }
