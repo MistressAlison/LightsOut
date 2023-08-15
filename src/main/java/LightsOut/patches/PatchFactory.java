@@ -82,7 +82,7 @@ public class PatchFactory {
         return "skeleton.getX() + skeleton.findBone(\""+bone+"\").getWorldX(), skeleton.getY() + skeleton.findBone(\""+bone+"\").getWorldY(), "+r+SCALE+", "+i;
     }
 
-    public static String bonesToXYRI(String[] bones, float[] r, float[] i) {
+    public static String boneToXYRI(String[] bones, float[] r, float[] i) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (int index = 0 ; index < bones.length ; index++) {
@@ -102,7 +102,7 @@ public class PatchFactory {
         return "current_x + "+dist+SCALE+"*drawScale * com.badlogic.gdx.math.MathUtils.sinDeg((float)("+atan+" - angle)), current_y + "+dist+SCALE+"*drawScale * com.badlogic.gdx.math.MathUtils.cosDeg((float)("+atan+" - angle)),"+r+SCALE+"*drawScale, "+i;
     }
 
-    public static String cardsToXYRI(float[] dx, float[] dy, float[] r, float[] i) {
+    public static String cardToXYRI(float[] dx, float[] dy, float[] r, float[] i) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (int index = 0 ; index < dx.length ; index++) {
@@ -120,7 +120,7 @@ public class PatchFactory {
         return x+SCALE+", "+y+SCALE+", "+r+SCALE+", "+i;
     }
 
-    public static String eventsToXYRI(float[] dx, float[] dy, float[] r, float[] i) {
+    public static String eventToXYRI(float[] dx, float[] dy, float[] r, float[] i) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (int index = 0 ; index < dx.length ; index++) {
@@ -130,6 +130,23 @@ public class PatchFactory {
                 first = false;
             }
             sb.append(eventToXYTI(dx[index], dy[index], r[index], i[index]));
+        }
+        return sb.toString();
+    }
+
+    public static String eventToXYRI(float[] flatXYRI) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (int index = 0 ; index < flatXYRI.length ; index++) {
+            if (!first) {
+                sb.append(", ");
+            } else {
+                first = false;
+            }
+            sb.append(flatXYRI[index]);
+            if (index % 4 == 3) {
+                sb.append(SCALE);
+            }
         }
         return sb.toString();
     }
@@ -151,7 +168,7 @@ public class PatchFactory {
     }
 
     public static void addEntity(Class<? extends AbstractCreature> clazz, String[] bones, float[] r, float[] i, Color[] c) {
-        PATCHES.add(new PatchData(clazz, bonesToXYRI(bones, r, i), colorToString(c)));
+        PATCHES.add(new PatchData(clazz, boneToXYRI(bones, r, i), colorToString(c)));
     }
 
     public static void addSimpleVFX(Class<? extends AbstractGameEffect> clazz, float r, float i) {
@@ -167,7 +184,7 @@ public class PatchFactory {
     }
 
     public static void addCard(Class<? extends AbstractCard> clazz, float[] dx, float[] dy, float[] r, float[] i, Color... c) {
-        PATCHES.add(new PatchData(clazz, cardsToXYRI(dx, dy, r, i), colorToString(c)));
+        PATCHES.add(new PatchData(clazz, cardToXYRI(dx, dy, r, i), colorToString(c)));
     }
 
     public static void addEvent(Class<? extends AbstractEvent> clazz, float x, float y, float r, float i, Color c) {
@@ -175,7 +192,11 @@ public class PatchFactory {
     }
 
     public static void addEvent(Class<? extends AbstractEvent> clazz, float[] x, float[] y, float[] r, float[] i, Color... c) {
-        PATCHES.add(new PatchData(clazz, eventsToXYRI(x, y, r, i), colorToString(c)));
+        PATCHES.add(new PatchData(clazz, eventToXYRI(x, y, r, i), colorToString(c)));
+    }
+
+    public static void addEvent(Class<? extends AbstractEvent> clazz, float[] flatXYRI, Color... c) {
+        PATCHES.add(new PatchData(clazz, eventToXYRI(flatXYRI), colorToString(c)));
     }
 
     public static void addCustom(Class<?> clazz, String xyri, Color... colors) {
