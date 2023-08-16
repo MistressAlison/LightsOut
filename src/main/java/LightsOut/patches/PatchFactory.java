@@ -149,7 +149,7 @@ public class PatchFactory {
                 first = false;
             }
             sb.append(flatXYRI[index]);
-            if (index % 4 == 3) {
+            if (index % 4 != 3) {
                 sb.append(SCALE);
             }
         }
