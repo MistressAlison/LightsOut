@@ -48,6 +48,8 @@ import static LightsOut.util.ColorUtil.*;
 public class PatchFactory {
     public static final ArrayList<PatchData> PATCHES = new ArrayList<>();
     public static final String SCALE = "*com.megacrit.cardcrawl.core.Settings.scale";
+    public static final String WIDTH = "com.megacrit.cardcrawl.core.Settings.WIDTH";
+    public static final String HEIGHT = "com.megacrit.cardcrawl.core.Settings.HEIGHT";
     public static final String IMAGE = "com.megacrit.cardcrawl.helpers.ImageMaster";
     public static class PatchData {
         public Class<?> classToPatch;
@@ -347,6 +349,7 @@ public class PatchFactory {
             addSimpleVFX(LightBulbEffect.class, 200f, 1.0f);
             addSimpleVFX(VerticalImpactEffect.class, 200f, 1.0f);
             addCustom(AnimatedSlashEffect.class, "x - 32"+SCALE+", y, 200f"+SCALE+", 0.8f, x + 32"+SCALE+", y, 200f"+SCALE+", 0.8f", "color, color2");
+            addCustom(ViceCrushEffect.class, "x, y, 200f"+SCALE+", 1.0f, x2, y, 200f"+SCALE+", 1.0", "color, color");
 
             addSimpleVFX(GlowRelicParticle.class, 50f, 0.05f);
             addCustom(FlameAnimationEffect.class, "nodeHb.cX, nodeHb.cY, 75f"+SCALE+", 0.25f", Color.SCARLET);
@@ -362,6 +365,32 @@ public class PatchFactory {
 
             addCustom(UncommonPotionParticleEffect.class, "oX + (hb == null ? x : hb.cX) + img.packedWidth / 2.0F, oY + (hb == null ? y : hb.cY) + img.packedHeight / 2.0F, 40f"+SCALE+",0.25f", "color");
             addCustom(RarePotionParticleEffect.class, "oX + (hb == null ? x : hb.cX) + img.packedWidth / 2.0F, oY + (hb == null ? y : hb.cY) + img.packedHeight / 2.0F, 40f"+SCALE+",0.25f", "color");
+
+            addCustom(BorderFlashEffect.class,
+                    "0, 0, 400f"+SCALE+", 0.7f*color.a, " +
+                            "0, "+HEIGHT+"/2f, 400f"+SCALE+", 0.7f*color.a, " +
+                            "0, "+HEIGHT+", 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+"/3f, "+HEIGHT+", 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+"*2/3f, "+HEIGHT+", 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+", "+HEIGHT+", 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+", "+HEIGHT+"/2f, 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+", 0, 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+"*2/3f, 0, 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+"/3f, 0, 400f"+SCALE+", 0.7f*color.a",
+                    "color, color, color, color, color, color, color, color, color, color");
+            addCustom(BorderLongFlashEffect.class,
+                    "0, 0, 400f"+SCALE+", 0.7f*color.a, " +
+                            "0, "+HEIGHT+"/2f, 400f"+SCALE+", 0.7f*color.a, " +
+                            "0, "+HEIGHT+", 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+"/3f, "+HEIGHT+", 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+"*2/3f, "+HEIGHT+", 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+", "+HEIGHT+", 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+", "+HEIGHT+"/2f, 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+", 0, 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+"*2/3f, 0, 400f"+SCALE+", 0.7f*color.a, " +
+                            WIDTH+"/3f, 0, 400f"+SCALE+", 0.7f*color.a",
+                    "color, color, color, color, color, color, color, color, color, color");
+
 
             for (PatchData data : PATCHES) {
                 CtClass ctClass = ctBehavior.getDeclaringClass().getClassPool().get(data.classToPatch.getName());
