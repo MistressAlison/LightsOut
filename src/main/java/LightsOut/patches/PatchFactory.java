@@ -311,7 +311,6 @@ public class PatchFactory {
             addEvent(GoopPuddle.class, new float[]{605, 198, 200f, 0.6f,   329, 470, 150f, 0.5f,   682, 565, 100f, 0.4f,   517, 673, 50f, 0.4f}, Color.PURPLE, Color.PURPLE, Color.PURPLE, Color.PURPLE);
 
             //Effects
-            addSimpleVFX(FastSmokeParticle.class, 300f, 2f);
             addSimpleVFX(LightningEffect.class, 2000f, 2f);
             addSimpleVFX(MindblastEffect.class, 2000f, 2f);
             addSimpleVFX(LaserBeamEffect.class, 2000f, 2f);
@@ -344,6 +343,8 @@ public class PatchFactory {
             addCustom(LightFlareParticleEffect.class, "pos.x, pos.y, 200f"+SCALE+", 0.1f", "color");
             addCustom(AwakenedEyeParticle.class, "x + "+IMAGE+".ROOM_SHINE_2.packedWidth / 2.0F, y + "+IMAGE+".ROOM_SHINE_2.packedHeight / 2.0F, 200f"+SCALE+", 0.1f", "color");
             addCustom(UpgradeHammerImprintEffect.class, "x, y, 200f"+SCALE+", 0.1f", Color.YELLOW);
+
+            addSimpleVFX(FastSmokeParticle.class, 400f, 0.15f);
 
             addSimpleVFX(MiracleEffect.class, 200f, 1.0f);
             addSimpleVFX(LightBulbEffect.class, 200f, 1.0f);
