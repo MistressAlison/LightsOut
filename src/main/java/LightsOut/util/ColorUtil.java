@@ -27,11 +27,13 @@ public class ColorUtil {
     public static final Color CERISE = new Color(1, 0, 0.75f, 1);
     public static final Color ROSE = new Color(1, 0, 0.5f, 1);
     public static final Color CRIMSON = new Color(1, 0, 0.25f, 1);
+
     public static final Color WHITE = new Color(1, 1, 1, 1);
-    public static final Color QUARTER_GRAY =  new Color(0.75f, 0.75f, 0.75f, 1);
-    public static final Color HALF_GRAY =  new Color(0.5f, 0.5f, 0.5f, 1);
-    public static final Color THREE_QUARTER_GRAY =  new Color(0.25f, 0.25f, 0.25f, 1);
+    public static final Color LIGHT_GRAY =  new Color(0.75f, 0.75f, 0.75f, 1);
+    public static final Color GRAY =  new Color(0.5f, 0.5f, 0.5f, 1);
+    public static final Color DARK_GRAY =  new Color(0.25f, 0.25f, 0.25f, 1);
     public static final Color BLACK = new Color(0, 0, 0, 1);
+
     public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
     public static Color mix(Color c1, Color c2) {
