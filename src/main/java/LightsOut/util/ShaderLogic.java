@@ -52,6 +52,14 @@ public class ShaderLogic implements ScreenPostProcessor {
                 rgba[4 * i + 2] = lightsToRender.get(i).color.b;
                 rgba[4 * i + 3] = lightsToRender.get(i).color.a;
             }
+            // WIP Flashlight 5
+            /*float[] xyricolor = new float[size*3];
+            for (int i = 0 ; i < size ; i ++) {
+                xyricolor[3 * i] = (int)lightsToRender.get(i).x + (((int)(lightsToRender.get(i).y)) << 16);
+                xyricolor[3 * i + 1] = (int)lightsToRender.get(i).radius + (((int)(lightsToRender.get(i).intensity*1000/divisor)) << 16);
+                xyricolor[3 * i + 2] = lightsToRender.get(i).color.toIntBits();
+            }
+            sp.setUniform3fv("u_XYRIColor[0]", xyricolor, 0, size * 3);*/
             sp.setUniformi("u_lightObjects", size);
             sp.setUniform4fv("u_objectXYRI[0]", xyri, 0, size * 4);
             sp.setUniform4fv("u_objectColor[0]", rgba, 0, size * 4);
