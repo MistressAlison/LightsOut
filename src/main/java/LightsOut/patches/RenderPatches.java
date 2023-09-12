@@ -1,5 +1,6 @@
 package LightsOut.patches;
 
+import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
@@ -91,6 +92,9 @@ public class RenderPatches {
                     CustomLightPatches.processCustomLights(m);
                     for (AbstractPower p : m.powers) {
                         CustomLightPatches.processCustomLights(p);
+                    }
+                    for (AbstractGameEffect e : ReflectionHacks.<ArrayList<AbstractGameEffect>>getPrivate(m, AbstractMonster.class, "intentVfx")) {
+                        CustomLightPatches.processCustomLights(e);
                     }
                 }
             }

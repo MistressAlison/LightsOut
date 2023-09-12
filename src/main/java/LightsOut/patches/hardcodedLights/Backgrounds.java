@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rooms.RestRoom;
 import com.megacrit.cardcrawl.scenes.TheCityScene;
 import com.megacrit.cardcrawl.vfx.scene.FireFlyEffect;
@@ -24,7 +25,7 @@ public class Backgrounds {
             if (!___renderFg2) {
                 ShaderLogic.lightsToRender.add(new LightData(1848.0F * Settings.xScale, 314.0F * Settings.yScale, 250.0F, 1.0F, FG2_COLOR));
             }
-            if (___hasFlies && !___isCamp) {
+            if (___hasFlies && !___isCamp && !AbstractDungeon.isScreenUp) {
                 for (FireFlyEffect e : ___fireFlies) {
                     CustomLightPatches.processCustomLights(e);
                 }

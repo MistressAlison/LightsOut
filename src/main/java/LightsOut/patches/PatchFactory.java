@@ -357,12 +357,15 @@ public class PatchFactory {
 
             addSimpleVFX(UpgradeShineParticleEffect.class, 50f, 0.5f);
             addSimpleVFX(BossChestShineEffect.class, 50f, 0.5f);
+            addSimpleVFX(ChestShineEffect.class, 50f, 0.5f);
             addCustom(FireFlyEffect.class, "x, y, 120f"+SCALE+"*color.a, 0.5f, x, y, 500f"+SCALE+"*color.a, 0.1f", "color, color");
             addSimpleVFX(ShinySparkleEffect.class, 50f, 0.5f);
             addSimpleVFX(ShineSparkleEffect.class, 50f, 0.5f);
             addSimpleVFX(ImpactSparkEffect.class, 50f, 0.5f);
             addSimpleVFX(DamageImpactLineEffect.class, 50f, 0.1f);
             addSimpleVFX(BlockImpactLineEffect.class, 50f, 0.1f);
+            addColoredVFX(BuffParticleEffect.class, 50f, 0.1f, AZURE);
+            addColoredVFX(DebuffParticleEffect.class, 50f, 0.1f, CHARTREUSE);
 
             addCustom(UncommonPotionParticleEffect.class, "oX + (hb == null ? x : hb.cX) + img.packedWidth / 2.0F, oY + (hb == null ? y : hb.cY) + img.packedHeight / 2.0F, 40f"+SCALE+",0.25f", "color");
             addCustom(RarePotionParticleEffect.class, "oX + (hb == null ? x : hb.cX) + img.packedWidth / 2.0F, oY + (hb == null ? y : hb.cY) + img.packedHeight / 2.0F, 40f"+SCALE+",0.25f", "color");
