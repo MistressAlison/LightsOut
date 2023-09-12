@@ -16,8 +16,8 @@ uniform vec2 u_screenSize;//width, height
 uniform vec2 u_mouse;
 uniform float x_time;
 uniform int u_lightObjects;
-uniform vec4 u_objectXYRI[256];
-uniform vec4 u_objectColor[256];
+uniform vec4 u_objectXYRI[500];
+uniform vec4 u_objectColor[500];
 uniform float m_scale;
 uniform bool m_mode;
 uniform float m_decay;

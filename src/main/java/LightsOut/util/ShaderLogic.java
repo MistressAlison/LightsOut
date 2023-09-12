@@ -39,7 +39,7 @@ public class ShaderLogic implements ScreenPostProcessor {
             }
             ShaderProgram back = sb.getShader();
             sb.setShader(sp);
-            int size = Math.min(256, lightsToRender.size());
+            int size = Math.min(500, lightsToRender.size());
             float[] xyri = new float[size * 4];
             float[] rgba = new float[size * 4];
             for (int i = 0; i < size; i++) {
