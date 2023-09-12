@@ -6,7 +6,7 @@
     <groupId>LightsOut</groupId>
     <artifactId>LightsOut</artifactId> <!--Keep a note of this one: this is the ID used in the "auto add cards" method-->
     <name>Lights Out</name>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <description>The Spire sleeps at night.</description>
 
     <properties>
