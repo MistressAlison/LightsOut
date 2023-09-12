@@ -1,5 +1,6 @@
 package LightsOut.patches.hardcodedLights;
 
+import LightsOut.LightsOutMod;
 import LightsOut.util.ColorUtil;
 import LightsOut.util.LightData;
 import LightsOut.util.ShaderLogic;
@@ -15,41 +16,43 @@ public class Entity {
     public static class IntentLight {
         @SpirePostfixPatch
         public static void lights(AbstractMonster __instance, BobEffect ___bobEffect) {
-            Color c = Color.WHITE;
-            switch (__instance.intent) {
-                case ATTACK:
-                case ATTACK_DEFEND:
-                case ESCAPE:
-                    c = Color.RED;
-                    break;
-                case BUFF:
-                case ATTACK_BUFF:
-                case DEFEND_BUFF:
-                case DEFEND:
-                    c = ColorUtil.AZURE;
-                    break;
-                case DEBUFF:
-                case ATTACK_DEBUFF:
-                case DEFEND_DEBUFF:
-                    c = Color.CHARTREUSE;
-                    break;
-                case STRONG_DEBUFF:
-                case MAGIC:
-                    c = Color.PURPLE;
-                    break;
-                case DEBUG:
-                case NONE:
-                    c = ColorUtil.TRANSPARENT;
-                    break;
-                case SLEEP:
-                case STUN:
-                case UNKNOWN:
-                    c = Color.YELLOW;
-                    break;
-                default:
-                    break;
+            if (LightsOutMod.glowingIntents) {
+                Color c = Color.WHITE;
+                switch (__instance.intent) {
+                    case ATTACK:
+                    case ATTACK_DEFEND:
+                    case ESCAPE:
+                        c = Color.RED;
+                        break;
+                    case BUFF:
+                    case ATTACK_BUFF:
+                    case DEFEND_BUFF:
+                    case DEFEND:
+                        c = ColorUtil.AZURE;
+                        break;
+                    case DEBUFF:
+                    case ATTACK_DEBUFF:
+                    case DEFEND_DEBUFF:
+                        c = Color.CHARTREUSE;
+                        break;
+                    case STRONG_DEBUFF:
+                    case MAGIC:
+                        c = Color.PURPLE;
+                        break;
+                    case DEBUG:
+                    case NONE:
+                        c = ColorUtil.TRANSPARENT;
+                        break;
+                    case SLEEP:
+                    case STUN:
+                    case UNKNOWN:
+                        c = Color.YELLOW;
+                        break;
+                    default:
+                        break;
+                }
+                ShaderLogic.lightsToRender.add(new LightData(__instance.intentHb.cX, __instance.intentHb.cY + ___bobEffect.y, 50f * Settings.scale, 1.0f, c));
             }
-            ShaderLogic.lightsToRender.add(new LightData(__instance.intentHb.cX, __instance.intentHb.cY + ___bobEffect.y, 50f * Settings.scale, 1.0f, c));
         }
     }
 }

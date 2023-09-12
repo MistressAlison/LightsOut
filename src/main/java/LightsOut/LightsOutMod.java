@@ -13,6 +13,7 @@ import basemod.interfaces.PostUpdateSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -30,53 +31,40 @@ import java.util.Properties;
 @SpireInitializer
 public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscriber, PostRenderSubscriber, PostUpdateSubscriber {
     public static final Logger logger = LogManager.getLogger(LightsOutMod.class.getName());
-
     private static String modID;
-
     public static SpireConfig LOConfig;
-
     public static String FILE_NAME = "LightsOutConfig";
 
     public static final String ENABLE_MOD = "enableMod";
-
     public static boolean modEnabled = true;
 
     public static final String TORCH_MODE = "torchMode";
-
     public static boolean torchMode = false;
 
     public static final String MOUSE_RADIUS = "mouseRadium";
-
     public static int mouseRadius = 360;
 
     public static final String TORCH_MODE_DECAY = "torchModeDecay";
-
     public static int torchModeDecay = 5;
 
     public static final String AMBIENT_LIGHT = "ambientLight";
-
     public static int ambientLight = 0;
 
     public static final String COLORFUL_MAP = "colorfulMap";
-
     public static boolean colorfulMap = false;
 
     public static final String GLOWING_MAP = "glowingMap";
-
     public static boolean glowingMap = true;
 
+    public static final String GLOWING_INTENTS = "glowingIntents";
+    public static boolean glowingIntents = true;
+
     public static UIStrings uiStrings;
-
     public static String[] TEXT;
-
     public static String[] EXTRA_TEXT;
-
     private static final String MODNAME = "Lights Out";
-
     private static final String AUTHOR = "Mistress Autumn";
-
     private static final String DESCRIPTION = "Turns off the Spire.";
-
     public static final String BADGE_IMAGE = "LightsOutResources/images/Badge.png";
 
     public static final ArrayList<AbstractGameEffect> managedEffects = new ArrayList<>();
@@ -95,6 +83,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         LODefaultSettings.setProperty(AMBIENT_LIGHT, String.valueOf(ambientLight));
         LODefaultSettings.setProperty(COLORFUL_MAP, Boolean.toString(colorfulMap));
         LODefaultSettings.setProperty(GLOWING_MAP, Boolean.toString(glowingMap));
+        LODefaultSettings.setProperty(GLOWING_INTENTS, Boolean.toString(glowingIntents));
         try {
             LOConfig = new SpireConfig(modID, FILE_NAME, LODefaultSettings);
             modEnabled = LOConfig.getBool(ENABLE_MOD);
@@ -104,6 +93,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
             ambientLight = LOConfig.getInt(AMBIENT_LIGHT);
             colorfulMap = LOConfig.getBool(COLORFUL_MAP);
             glowingMap = LOConfig.getBool(GLOWING_MAP);
+            glowingIntents = LOConfig.getBool(GLOWING_INTENTS);
         } catch (IOException e) {
             logger.error("Lights Out SpireConfig initialization failed:");
             e.printStackTrace();
@@ -173,6 +163,17 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         });
         currentYposition -= spacingY;
 
+        ModLabeledToggleButton glowingIntentButton = new ModLabeledToggleButton(TEXT[7], 360.0F, currentYposition - 10.0F, Settings.CREAM_COLOR, FontHelper.charDescFont, LOConfig.getBool(GLOWING_INTENTS), settingsPanel, label -> {},button -> {
+            LOConfig.setBool(GLOWING_INTENTS, button.enabled);
+            glowingIntents = button.enabled;
+            try {
+                LOConfig.save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        currentYposition -= spacingY;
+
 
         ModLabeledToggleButton torchModeButton = new ModLabeledToggleButton(TEXT[1], 360.0F, currentYposition - 10.0F, Settings.CREAM_COLOR, FontHelper.charDescFont, LOConfig.getBool(TORCH_MODE), settingsPanel, label -> {},button -> {
             LOConfig.setBool(TORCH_MODE, button.enabled);
@@ -224,6 +225,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         settingsPanel.addUIElement(enableModsButton);
         settingsPanel.addUIElement(glowingMapButton);
         settingsPanel.addUIElement(colorfulButton);
+        settingsPanel.addUIElement(glowingIntentButton);
         settingsPanel.addUIElement(torchModeButton);
         settingsPanel.addUIElement(radLabel);
         settingsPanel.addUIElement(radSlider);

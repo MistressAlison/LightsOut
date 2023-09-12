@@ -7,7 +7,8 @@
       "Lantern Mode Decay (default 5)",
       "Ambient Light (default 0)",
       "Map Glow Colorful",
-      "Glowing Map"
+      "Glowing Map",
+      "Glowing Intents"
     ]
   },
   "LightsOut:InvincibleText": {

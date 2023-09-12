@@ -1,5 +1,6 @@
 package LightsOut.patches;
 
+import LightsOut.LightsOutMod;
 import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -88,13 +89,15 @@ public class RenderPatches {
         @SpirePostfixPatch
         public static void plz(MonsterGroup __instance) {
             for (AbstractMonster m : __instance.monsters) {
-                if (!m.isDeadOrEscaped()) {
+                if (!m.isDeadOrEscaped() && !AbstractDungeon.isScreenUp) {
                     CustomLightPatches.processCustomLights(m);
                     for (AbstractPower p : m.powers) {
                         CustomLightPatches.processCustomLights(p);
                     }
-                    for (AbstractGameEffect e : ReflectionHacks.<ArrayList<AbstractGameEffect>>getPrivate(m, AbstractMonster.class, "intentVfx")) {
-                        CustomLightPatches.processCustomLights(e);
+                    if (LightsOutMod.glowingIntents) {
+                        for (AbstractGameEffect e : ReflectionHacks.<ArrayList<AbstractGameEffect>>getPrivate(m, AbstractMonster.class, "intentVfx")) {
+                            CustomLightPatches.processCustomLights(e);
+                        }
                     }
                 }
             }
