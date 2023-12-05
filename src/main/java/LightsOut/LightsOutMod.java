@@ -25,8 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Properties;
+import java.util.*;
 
 @SpireInitializer
 public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscriber, PostRenderSubscriber, PostUpdateSubscriber {
@@ -68,6 +67,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
     public static final String BADGE_IMAGE = "LightsOutResources/images/Badge.png";
 
     public static final ArrayList<AbstractGameEffect> managedEffects = new ArrayList<>();
+    public static final HashMap<String, Collection<Object>> externallyManagedLightObjects = new HashMap<>();
 
     public LightsOutMod() {
         logger.info("Subscribe to BaseMod hooks");
@@ -269,11 +269,20 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
         return getModID() + ":" + idText;
     }
 
+    public static void registerLightManager(String s, Collection<Object> objects) {
+        externallyManagedLightObjects.put(s, objects);
+    }
+
     @Override
     public void receivePostRender(SpriteBatch sb) {
         for (AbstractGameEffect e : managedEffects) {
             e.render(sb);
             CustomLightPatches.processCustomLights(e);
+        }
+        for (Collection<Object> objects : externallyManagedLightObjects.values()) {
+            for (Object o : objects) {
+                CustomLightPatches.processCustomLights(o);
+            }
         }
     }
 
