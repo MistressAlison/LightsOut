@@ -14,7 +14,7 @@ Lighting data has been added to over 100 objects in the spire, including particl
 
 Character Select screens have been given lights and glows.
 
-Custom lighting data can be added by other mods that want to support lighting.
+Custom lighting data can be added by other mods that want to support lighting, see https://github.com/MistressAlison/LightsOut/wiki/Supporting-Custom-Lights.
 
 # Configurable
 
