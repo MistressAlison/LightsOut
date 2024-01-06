@@ -19,7 +19,7 @@ Custom lighting data can be added by other mods that want to support lighting, s
 # Configurable
 
 There's multiple modes that are configurable in the settings that allow you to tweak the radius and strength of your mouse light, the strength of the darkening and more. Please check out the config page to tweak any of the following:
-* Quick enabling and disables of the mod
+* Quick enabling and disabling of the mod
 * Should the map have glow
 * Should the glowing map have color
 * Should monster intents glow
