@@ -1,3 +1,5 @@
+⚠ PHOTOSENSITIVITY/EPILEPSY WARNING: This mod contains flashing lights and is not recommended for people with photosensitivity or epilepsy.
+
 # Overview
 
 Have you ever felt like the spire is too flat? You're in a massive tower but apparently it's all lit up perfectly with no real variation. You use your moves to shoot laser beams at the denizens, but it emits no light.
