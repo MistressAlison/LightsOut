@@ -5,7 +5,7 @@
       "Lantern Mode",
       "Light Radius (default 360)",
       "Lantern Mode Decay (default 5)",
-      "Ambient Light (default 0)",
+      "Ambient Light (default 15)",
       "Map Glow Colorful",
       "Glowing Map",
       "Glowing Intents"

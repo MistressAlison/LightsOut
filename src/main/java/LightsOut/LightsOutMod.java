@@ -47,7 +47,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
     public static int torchModeDecay = 5;
 
     public static final String AMBIENT_LIGHT = "ambientLight";
-    public static int ambientLight = 0;
+    public static int ambientLight = 15;
 
     public static final String COLORFUL_MAP = "colorfulMap";
     public static boolean colorfulMap = false;
@@ -56,7 +56,7 @@ public class LightsOutMod implements EditStringsSubscriber, PostInitializeSubscr
     public static boolean glowingMap = true;
 
     public static final String GLOWING_INTENTS = "glowingIntents";
-    public static boolean glowingIntents = true;
+    public static boolean glowingIntents = false;
 
     public static UIStrings uiStrings;
     public static String[] TEXT;
